@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
-import botRoute from "./routes/botRoute";
+import { botRoute, adRoute } from "./routes/index";
 
 const initServer = async () => {
   const app: express.Application = express();
@@ -26,6 +26,7 @@ const initServer = async () => {
 
   // Setting up routes
   app.use("/bots", botRoute);
+  app.use("/ads", adRoute);
 
   // Just checking if given PORT variable is an integer or not
   let port = parseInt(config.PORT || "");

@@ -8,4 +8,10 @@ router.get("/", async (req: Request, res: Response) => {
   res.send(await controller.getAll());
 });
 
-export default router;
+router.get("/:username", async (req: Request, res: Response) => {
+  const controller = new BotController();
+  const { username } = req.params;
+  res.send(await controller.getByUsername(username));
+});
+
+export { router as botRoute };
