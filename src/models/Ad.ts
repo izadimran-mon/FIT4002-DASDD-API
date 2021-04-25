@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import { Bot } from ".";
+import { AdToTag, Bot } from ".";
 
 @Entity()
 export class Ad extends BaseEntity {
@@ -44,4 +44,7 @@ export class Ad extends BaseEntity {
 
   @Column("varchar", { nullable: true })
   seenOn?: string;
+
+  @OneToMany(() => AdToTag, (adToTag) => adToTag.tag)
+  adToTags!: AdToTag[];
 }
