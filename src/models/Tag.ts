@@ -1,11 +1,13 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { AdToTag } from ".";
+import { AdTag } from ".";
+import { Ad } from "./Ad";
 
 @Entity()
 export class Tag {
@@ -16,6 +18,18 @@ export class Tag {
   @Column()
   name!: string;
 
-  @OneToMany(() => AdToTag, (adToTag) => adToTag.tag)
-  adToTags!: AdToTag[];
+  @OneToMany(() => AdTag, (adToTag) => adToTag.tag)
+  adTags?: AdTag[];
+
+  ads!: Ad[];
+
+  @AfterLoad()
+  private setAds() {
+    // Flatten join result with AdTag entity
+    // Note: might be better to do this on the database side
+    this.ads = this.adTags ? this.adTags.map((adTag) => adTag.ad) : [];
+
+    // Remove AdTag property to simplify result
+    delete this.adTags;
+  }
 }

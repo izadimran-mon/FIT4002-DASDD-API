@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   BaseEntity,
   Column,
   Entity,
@@ -8,7 +9,8 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import { AdToTag, Bot } from ".";
+import { AdTag, Bot } from ".";
+import { Tag } from "./Tag";
 
 @Entity()
 export class Ad extends BaseEntity {
@@ -45,6 +47,18 @@ export class Ad extends BaseEntity {
   @Column("varchar", { nullable: true })
   seenOn?: string;
 
-  @OneToMany(() => AdToTag, (adToTag) => adToTag.tag)
-  adToTags!: AdToTag[];
+  @OneToMany(() => AdTag, (adToTag) => adToTag.ad)
+  adTags?: AdTag[];
+
+  tags?: Tag[];
+
+  @AfterLoad()
+  private setTags() {
+    // Flatten join result with AdTag entity
+    // Note: might be better to do this on the database side
+    this.tags = this.adTags ? this.adTags.map((adTag) => adTag.tag) : [];
+
+    // Remove AdTag property to simplify result
+    delete this.adTags;
+  }
 }

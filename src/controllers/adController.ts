@@ -4,6 +4,7 @@ export class AdController {
   async getAll(): Promise<Ad[]> {
     return await Ad.find({
       take: 1000, // TODO: add option to allow client to adjust and pagination
+      relations: ["adTags", "adTags.tag"],
     });
   }
 
