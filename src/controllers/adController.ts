@@ -1,4 +1,5 @@
-import { Ad } from "~/models";
+import { DeleteResult } from "typeorm";
+import { Ad, AdTag } from "~/models";
 
 export class AdController {
   async getAll(): Promise<Ad[]> {
@@ -10,7 +11,24 @@ export class AdController {
 
   async getById(id: string): Promise<Ad> {
     return await Ad.findOneOrFail({
-      id,
+      where: { id },
+      relations: ["adTags", "adTags.tag"],
     });
+  }
+
+  async addTagToAd(adId: string, tagId: number): Promise<AdTag> {
+    const newAdTag = AdTag.create({
+      adId,
+      tagId,
+    });
+    return await AdTag.save(newAdTag);
+  }
+
+  async deleteTagFromAd(adId: string, tagId: number): Promise<DeleteResult> {
+    const adTagToDelete = AdTag.create({
+      adId,
+      tagId,
+    });
+    return await AdTag.delete(adTagToDelete);
   }
 }

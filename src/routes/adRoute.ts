@@ -19,7 +19,30 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-// POST /entity/29292/tags
-router.post("/:id/tags/:tag_id", async (req: Request, res: Response) => {});
+router.post(
+  "/:id/tags/:tagId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    let { id, tagId } = req.params;
+    try {
+      await controller.addTagToAd(id, parseInt(tagId));
+      res.send(await controller.getById(id));
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/:id/tags/:tagId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    let { id, tagId } = req.params;
+    try {
+      await controller.deleteTagFromAd(id, parseInt(tagId));
+      res.send(await controller.getById(id));
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export { router as adRoute };
