@@ -1,9 +1,15 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
+import {
+  BaseEntity,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { Ad, Tag } from ".";
 
 @Entity()
 // TODO: cascade?
-export class AdTag {
+export class AdTag extends BaseEntity {
   @PrimaryColumn()
   adId!: string;
 

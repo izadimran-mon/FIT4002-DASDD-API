@@ -54,9 +54,11 @@ export class Ad extends BaseEntity {
 
   @AfterLoad()
   private setTags() {
+    if (!this.adTags) return;
+
     // Flatten join result with AdTag entity
     // Note: might be better to do this on the database side
-    this.tags = this.adTags ? this.adTags.map((adTag) => adTag.tag) : [];
+    this.tags = this.adTags.map((adTag) => adTag.tag);
 
     // Remove AdTag property to simplify result
     delete this.adTags;

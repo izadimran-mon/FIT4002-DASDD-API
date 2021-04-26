@@ -1,9 +1,9 @@
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
-import { getConnection } from "typeorm";
+import { EntityNotFoundError, getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
-import { botRoute, adRoute } from "./routes/index";
+import { botRoute, adRoute, tagRoute } from "./routes/index";
 
 const initServer = async () => {
   const app: express.Application = express();
@@ -27,6 +27,17 @@ const initServer = async () => {
   // Setting up routes
   app.use("/bots", botRoute);
   app.use("/ads", adRoute);
+  app.use("/tags", tagRoute);
+
+  // Catching errors
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.log(err);
+    if (err instanceof EntityNotFoundError) {
+      res.status(404).send({ error: err.name, message: err.message });
+    } else {
+      res.status(404).send({ error: err.name, message: err.message });
+    }
+  });
 
   // Just checking if given PORT variable is an integer or not
   let port = parseInt(config.PORT || "");

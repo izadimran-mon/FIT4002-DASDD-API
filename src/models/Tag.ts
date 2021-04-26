@@ -1,16 +1,19 @@
 import {
   AfterLoad,
+  BaseEntity,
   Column,
   Entity,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import { AdTag } from ".";
 import { Ad } from "./Ad";
 
 @Entity()
-export class Tag {
+@Unique("tag_name_constraint", ["name"])
+export class Tag extends BaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
@@ -27,9 +30,11 @@ export class Tag {
   private setAds() {
     // Flatten join result with AdTag entity
     // Note: might be better to do this on the database side
-    this.ads = this.adTags ? this.adTags.map((adTag) => adTag.ad) : [];
+    if (!this.adTags) return;
+    this.ads = this.adTags.map((adTag) => adTag.ad);
 
     // Remove AdTag property to simplify result
     delete this.adTags;
+    return;
   }
 }
