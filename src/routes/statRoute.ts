@@ -8,4 +8,8 @@ router.get("/bot-alignment", async (req: Request, res: Response) => {
   res.send(await controller.getBotAlignmentStat());
 });
 
+router.get("/category", async (req: Request, res: Response) => {
+  res.send(await controller.getCategoryStat());
+});
+
 export { router as statRoute };

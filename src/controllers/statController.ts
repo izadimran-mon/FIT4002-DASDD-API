@@ -1,5 +1,6 @@
+import e from "cors";
 import { createQueryBuilder, getConnection } from "typeorm";
-import { Bot } from "~/models";
+import { Ad, Bot } from "~/models";
 
 export class StatController {
   async getBotAlignmentStat() {
@@ -28,5 +29,23 @@ export class StatController {
     });
     console.log(res);
     return res;
+  }
+  // .leftJoinAndSelect("adTags.tag", "tag")
+
+  async getCategoryStat() {
+    let rawRes = await Ad.createQueryBuilder("ad")
+      .leftJoin("ad.adTags", "adTags")
+      .leftJoin("adTags.tag", "tag")
+      .select("COUNT(ad.id)", "count")
+      .addSelect("tag.name", "label")
+      .groupBy("tag.name")
+      .getRawMany();
+    rawRes.forEach((e) => {
+      if (e.label === null) {
+        e.label = "uncategorised";
+      }
+    });
+    console.log(rawRes);
+    return rawRes;
   }
 }
