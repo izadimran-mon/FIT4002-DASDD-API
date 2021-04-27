@@ -24,7 +24,7 @@ const main = async () => {
 		FROM bot
 		WITH NO DATA;
 
-		COPY tmp_table("id", "username", "dob", "gender", "fName", "lName", "otherTermsCategory", "password", "locLat", "locLong", "type")
+		COPY tmp_table("id", "username", "dob", "gender", "fName", "lName", "otherTermsCategory", "password", "locLat", "locLong", "type", "politicalRanking")
 		FROM '${botFilePath}'
 		DELIMITER ','
 		CSV HEADER;

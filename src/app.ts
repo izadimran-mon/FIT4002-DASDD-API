@@ -3,11 +3,17 @@ import express, { NextFunction, Request, Response } from "express";
 import { EntityNotFoundError, getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
-import { botRoute, adRoute, tagRoute } from "./routes/index";
+import { botRoute, adRoute, tagRoute, statRoute } from "./routes/index";
 
 const initServer = async () => {
   const app: express.Application = express();
-
+  app.use(
+    cors({
+      origin: ["http://localhost:3000"], // allow to server to accept request from different origin
+      methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+      credentials: true, // allow session cookie from browser to pass through
+    })
+  );
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
@@ -28,6 +34,7 @@ const initServer = async () => {
   app.use("/bots", botRoute);
   app.use("/ads", adRoute);
   app.use("/tags", tagRoute);
+  app.use("/stats", statRoute);
 
   // Catching errors
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
