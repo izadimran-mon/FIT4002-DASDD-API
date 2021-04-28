@@ -1,5 +1,5 @@
-import express, { NextFunction, Request, Response } from "express";
-import { StatController, TagController } from "~/controllers/index";
+import express, { Request, Response } from "express";
+import { StatController } from "~/controllers/index";
 
 const router = express.Router();
 const controller = new StatController();

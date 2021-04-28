@@ -2,9 +2,14 @@ import { DeleteResult } from "typeorm";
 import { Ad, AdTag } from "~/models";
 
 export class AdController {
-  async getAll(): Promise<Ad[]> {
+  async getAll(queryParams: {
+    limit?: number;
+    offset?: number;
+  }): Promise<Ad[]> {
+    const { limit, offset } = queryParams;
     return await Ad.find({
-      take: 1000, // TODO: add option to allow client to adjust and pagination
+      take: limit ? limit : 1000,
+      skip: offset ? offset : 0,
       relations: ["adTags", "adTags.tag"],
     });
   }
