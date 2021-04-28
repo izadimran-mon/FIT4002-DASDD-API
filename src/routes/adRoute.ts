@@ -11,17 +11,17 @@ router.get("/", async (req: Request, res: Response) => {
    * # filter ads by:
    * - different bot attributes:
    *    + (done) political affiliation: &political=0&political=4
-   *    + (done) gender: &gender=male&gender=female
+   *    + (done) gender: &gender=male&gender=female (i.e. male OR female)
    *    + location
    *    + age when encountered ads (more difficult)
    * - (done) tags: &tag=fashion&tag=entertainment
    * - dates when ads where seen (more difficult)
    *
-   *
    * # sort ads:
    */
   let { offset, limit, political, gender, tag } = req.query;
 
+  // TODO: Testing needed to confirm different combinations of query params work
   const queryParams = {
     offset: offset ? parseInt(offset as string) : 0,
     limit: limit ? parseInt(limit as string) : 1000,
