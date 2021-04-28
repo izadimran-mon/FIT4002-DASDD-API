@@ -1,14 +1,33 @@
 import express, { NextFunction, Request, Response } from "express";
 import { getManager, getRepository } from "typeorm";
 import { AdController } from "~/controllers/adController";
+import { PaginationParams } from "~/helpers/types";
 import { Ad, AdTag } from "~/models";
 
 const router = express.Router();
 const controller = new AdController();
 
-router.get("/", async (req: Request, res: Response) => {
-  res.send(await controller.getAll());
-});
+router.get(
+  "/",
+  async (req: Request<any, any, {}, PaginationParams>, res: Response) => {
+    const { offset, limit } = req.query;
+    if (
+      typeof offset !== "number" ||
+      typeof limit !== "number" ||
+      offset < 0 ||
+      limit < 0
+    ) {
+      res.send([]);
+      return;
+    }
+    const queryParams = {
+      offset,
+      limit,
+    };
+    res.send(await controller.getAll(queryParams));
+    return;
+  }
+);
 
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
