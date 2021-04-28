@@ -6,6 +6,7 @@ export class AdController {
   async getAll(queryParams: PaginationParams & AdFilterParams): Promise<Ad[]> {
     const { limit, offset, gender, tag, political } = queryParams;
     const politicalInt = political?.map((e) => parseInt(e));
+    // TODO: Testing needed to confirm different combinations of query params work
 
     // Workaround for finding entity with relation condition: https://github.com/typeorm/typeorm/issues/4396#issuecomment-566254087
     const whereConditions: any[][] = [];
@@ -38,6 +39,9 @@ export class AdController {
           bot: "ad.bot",
         },
       },
+      order: {
+        id: "ASC",
+      },
     };
     if (whereConditions.length > 0) {
       findOptions.where = (qb: any) => {
@@ -50,30 +54,6 @@ export class AdController {
         }
       };
     }
-    // return await Ad.find({
-    //   take: limit ? limit : 1000,
-    //   skip: offset ? offset : 0,
-    //   // relations: ["adTags", "adTags.tag"],
-    //   join: {
-    //     alias: "ad",
-    //     leftJoinAndSelect: {
-    //       adTags: "ad.adTags",
-    //       tags: "adTags.tag",
-    //       bot: "ad.bot",
-    //     },
-    //     // leftJoin: {
-    //     //   bot: "ad.bot",
-    //     // },
-    //   },
-    //   where: (qb: any) => {
-    //     qb.where("bot.gender ILIKE ANY(:gender)", {
-    //       gender: [gender],
-    //     });
-    //     qb.andWhere("tags.name ILIKE ANY(:tags)", {
-    //       tags: ["fashion"],
-    //     });
-    //   },
-    // });
     return await Ad.find(findOptions);
   }
 
