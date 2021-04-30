@@ -3,9 +3,13 @@ import { BotController } from "~/controllers/botController";
 
 const router = express.Router();
 
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
   const controller = new BotController();
-  res.send(await controller.getAll());
+  try {
+    res.send(await controller.getAll());
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get(

@@ -9,7 +9,7 @@ const initServer = async () => {
   const app: express.Application = express();
   app.use(
     cors({
-      origin: ["http://localhost:3000"], // allow to server to accept request from different origin
+      origin: ["*"], // allow to server to accept request from different origin
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
       credentials: true, // allow session cookie from browser to pass through
     })
