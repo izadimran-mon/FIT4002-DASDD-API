@@ -6,8 +6,12 @@ import { Ad, AdTag } from "~/models";
 const router = express.Router();
 const controller = new AdController();
 
-router.get("/", async (req: Request, res: Response) => {
-  res.send(await controller.getAll());
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.send(await controller.getAll());
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
