@@ -43,6 +43,9 @@ export class Bot extends BaseEntity {
   @Column("varchar")
   type!: string;
 
+  @Column("int")
+  politicalRanking!: number;
+
   @OneToMany(() => Ad, (ad) => ad.bot)
   ads!: Ad[];
 }
