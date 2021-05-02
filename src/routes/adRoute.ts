@@ -1,17 +1,42 @@
 import express, { NextFunction, Request, Response } from "express";
-import { getManager, getRepository } from "typeorm";
 import { AdController } from "~/controllers/adController";
-import { Ad, AdTag } from "~/models";
+import { AdFilterParams, PaginationParams } from "~/helpers/types";
 
 const router = express.Router();
 const controller = new AdController();
 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.send(await controller.getAll());
-  } catch (err) {
-    next(err);
+router.get("/", async (req: Request, res: Response) => {
+  /**
+   * TODO:
+   * # filter ads by:
+   * - different bot attributes:
+   *    + (done) political affiliation: &political=0&political=4
+   *    + (done) gender: &gender=male&gender=female (i.e. male OR female)
+   *    + location
+   *    + age when encountered ads (more difficult)
+   * - (done) tags: &tag=fashion&tag=entertainment
+   * - dates when ads where seen (more difficult)
+   *
+   * # sort ads:
+   */
+  let { offset, limit, political, gender, tag } = req.query;
+
+  // TODO: Testing needed to confirm different combinations of query params work
+  const queryParams = {
+    offset: offset ? parseInt(offset as string) : 0,
+    limit: limit ? parseInt(limit as string) : 1000,
+    political:
+      typeof political === "string" ? [political] : (political as string[]),
+    gender: typeof gender === "string" ? [gender] : (gender as string[]),
+    tag: typeof tag === "string" ? [tag] : (tag as string[]),
+  };
+  if (queryParams.offset < 0 || queryParams.limit < 0) {
+    res.send([]);
+    return;
   }
+  console.log(queryParams);
+  res.send(await controller.getAll(queryParams));
+  return;
 });
 
 router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
