@@ -1,16 +1,15 @@
-FROM node:alpine
+FROM node:current
 
 WORKDIR '/usr/src/app'
 
 COPY package.json .
 RUN yarn
-RUN yarn add pm2 -g
+RUN npm install pm2 -g
 
 COPY tsconfig.json ./
 COPY ./src ./src
 
 RUN yarn build
-
 USER node
 
-CMD ["pm2-runtime", "start", "dist/index.js"]
+CMD ["pm2-runtime", "start", "dist/app.js"]
