@@ -1,6 +1,6 @@
 import e from "cors";
 import { createQueryBuilder, getConnection } from "typeorm";
-import { Ad, Bot } from "~/models";
+import { Ad, AdTag, Bot } from "~/models";
 
 export class StatController {
   async getBotAlignmentStat() {
@@ -67,22 +67,18 @@ export class StatController {
   }
 
   async getAdStats() {
-    const adTotal = (await Ad.findAndCount())[1];
-    let adNotTagged = adTotal;
-    let rawRes = await Ad.createQueryBuilder("ad")
-      .leftJoin("ad.adTags", "adTags")
-      .leftJoin("adTags.tag", "tag")
-      .select("COUNT(ad.id)", "count")
-      .addSelect("tag.name", "label")
-      .groupBy("tag.name")
-      .getRawMany();
-    rawRes.forEach((e) => {
-      if (e.label === null) {
-        adNotTagged = e.count;
-      }
-    });
+    const adTotal = (
+      await Ad.createQueryBuilder("ad")
+        .select("COUNT(*)", "adCount")
+        .getRawOne()
+    ).adCount;
+    console.log(adTotal);
 
-    const adTagged = adTotal - adNotTagged;
+    const adTagged = (
+      await AdTag.createQueryBuilder("adtag")
+        .select("COUNT(DISTINCT adtag.adId)", "adTaggedCount")
+        .getRawOne()
+    ).adTaggedCount;
 
     const botCount = (await Bot.findAndCount())[1];
 
