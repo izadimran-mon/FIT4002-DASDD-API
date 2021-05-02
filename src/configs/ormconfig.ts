@@ -1,10 +1,10 @@
-import path from "path";
+import path, { join } from "path";
 import { ConnectionOptions } from "typeorm";
 import { config } from "./config";
 // const result = dotenv.config();
 
 const isCompiled = path.extname(__filename).includes("js");
-console.log([__dirname + "../models/**/*{.ts,.js}"]);
+console.log([join(__dirname, "..", "models", "**", "*.entity.{ts,js}")]);
 export = {
   type: "postgres",
   host: config.DB_HOST || "localhost",
@@ -18,12 +18,12 @@ export = {
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 2000,
   migrationsRun: false,
-  entities: ["src/models/**/*{.ts,.js}"],
-  migrations: ["src/migrations/**/*{.ts,.js}"],
-  seeds: ["src/database/seeds/**/*{.ts,.js}"],
-  factories: ["src/database/factories/**/*{.ts,.js}"],
+  entities: [join(__dirname, "..", "models", "**", "*.{ts,js}")],
+  // migrations: ["src/migrations/**/*{.ts,.js}"],
+  // seeds: ["src/database/seeds/**/*{.ts,.js}"],
+  // factories: ["src/database/factories/**/*{.ts,.js}"],
   cli: {
-    entitiesDir: "src/models",
-    migrationsDir: "src/migrations",
+    entitiesDir: join(__dirname, "..", "models"),
+    migrationsDir: join(__dirname, "..", "migrations"),
   },
 } as ConnectionOptions;

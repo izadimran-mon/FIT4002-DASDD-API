@@ -23,6 +23,7 @@ export type Config = {
   DB_PASSWORD: string;
   DB_SYNC: boolean;
   DB_LOGS: boolean;
+  CLIENT_ORIGIN: string;
 };
 export const config: Config = {
   PORT: env.PORT || "localhost",
@@ -33,6 +34,7 @@ export const config: Config = {
   DB_PASSWORD: env.DB_PASSWORD || "password",
   DB_SYNC: env.DB_SYNC === "true" ? true : false,
   DB_LOGS: env.DB_LOGS === "true" ? true : false,
+  CLIENT_ORIGIN: env.CLIENT_ORIGIN || "http://localhost:3000",
 };
 console.log(process.env.NODE_ENV);
 console.log(config);
