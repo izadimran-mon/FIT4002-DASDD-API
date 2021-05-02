@@ -10,10 +10,10 @@ export const DBConnect = async () => {
   try {
     if (connection) {
       if (!connection.isConnected) {
-        await connection.connect();
+        return await connection.connect();
       }
     } else {
-      await createConnection(ORMConfig);
+      return await createConnection(ORMConfig);
     }
     console.log("Database connection was successful!");
   } catch (e) {
