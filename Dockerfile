@@ -1,10 +1,10 @@
-FROM node:alpine
+FROM node:current
 
 WORKDIR '/usr/src/app'
 
 COPY package.json .
 RUN yarn
-RUN yarn add pm2 -g
+RUN npm install pm2 -g
 
 COPY tsconfig.json ./
 COPY ./src ./src
