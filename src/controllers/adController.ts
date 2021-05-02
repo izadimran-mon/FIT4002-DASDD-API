@@ -33,11 +33,11 @@ export class AdController {
         leftJoinAndSelect: {
           adTags: "ad.adTags",
           tags: "adTags.tag",
-          // bot: "ad.bot",
-        },
-        leftJoin: {
           bot: "ad.bot",
         },
+        // leftJoin: {
+        //   bot: "ad.bot",
+        // },
       },
       order: {
         id: "ASC",
