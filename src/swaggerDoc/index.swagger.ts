@@ -5,6 +5,7 @@ import { botDef } from "./definitions/botDef.swagger";
 import { tagDef } from "./definitions/tagDef.swagger";
 import { stat } from "./stat.swagger";
 import { tag } from "./tag.swagger";
+const env = process.env;
 
 export const swaggerDocument = {
   swagger: "2.0",
@@ -14,6 +15,8 @@ export const swaggerDocument = {
     version: "1.0.0",
     title: "Monash Dark Ads Scraping",
   },
+  basePath:
+    env.NODE_ENV === "prod" || env.NODE_ENV === "production" ? "/api" : "/",
   tags: [
     {
       name: "Ad",
