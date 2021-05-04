@@ -24,7 +24,7 @@ router.get("/", async (req: Request, res: Response) => {
   // TODO: Testing needed to confirm different combinations of query params work
   const queryParams = {
     offset: offset ? parseInt(offset as string) : 0,
-    limit: limit ? parseInt(limit as string) : 1000,
+    limit: limit ? parseInt(limit as string) : 30,
     political:
       typeof political === "string" ? [political] : (political as string[]),
     gender: typeof gender === "string" ? [gender] : (gender as string[]),
