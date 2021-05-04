@@ -72,7 +72,6 @@ export class StatController {
         .select("COUNT(*)", "adCount")
         .getRawOne()
     ).adCount;
-    console.log(adTotal);
 
     const adTagged = (
       await AdTag.createQueryBuilder("adtag")
