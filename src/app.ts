@@ -4,6 +4,8 @@ import { EntityNotFoundError, getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
 import { botRoute, adRoute, tagRoute, statRoute } from "./routes/index";
+import swaggerUi from "swagger-ui-express";
+import { swaggerDocument } from "./swaggerDoc/index.swagger";
 
 const initServer = async () => {
   const app: express.Application = express();
@@ -29,6 +31,8 @@ const initServer = async () => {
   app.get("/health", (req, res) => {
     res.status(200).send("Server is running");
   });
+
+  app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   // Setting up routes
   app.use("/bots", botRoute);

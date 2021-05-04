@@ -26,7 +26,7 @@ export class AdController {
     }
 
     let findOptions: FindManyOptions = {
-      take: limit ? limit : 1000,
+      take: limit ? limit : 30,
       skip: offset ? offset : 0,
       join: {
         alias: "ad",
