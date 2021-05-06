@@ -1,9 +1,10 @@
 import {
   AfterLoad,
   BaseEntity,
+  BeforeInsert,
   Column,
   Entity,
-  ManyToMany,
+  getConnection,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
@@ -36,5 +37,25 @@ export class Tag extends BaseEntity {
     // Remove AdTag property to simplify result
     delete this.adTags;
     return;
+  }
+
+  @BeforeInsert()
+  private async checkAndSyncIdSequence() {
+    /**
+     * Resync id sequence
+     * Note:
+     * - Id sequence goes out-of-sync when we manually import tag data that also contains id
+     * - This can be disable in production if we do not manually import tag data to potentially give a very small performance boost
+     * - Potential problem with concurrent tag inserting from multiple concurrent transactions?
+     */
+
+    const res = await getConnection().manager.query(
+      `
+      SELECT SETVAL(
+        (SELECT PG_GET_SERIAL_SEQUENCE('"tag"', 'id')),
+        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"tag"', 'id'))-1, (SELECT (MAX("id")) FROM "tag"))
+      );
+      `
+    );
   }
 }
