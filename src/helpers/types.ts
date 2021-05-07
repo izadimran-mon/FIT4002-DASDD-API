@@ -7,4 +7,5 @@ export interface AdFilterParams {
   political?: string[];
   gender?: string[];
   tag?: string[];
+  bots?: string[];
 }
