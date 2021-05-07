@@ -19,7 +19,7 @@ router.get("/", async (req: Request, res: Response) => {
    *
    * # sort ads:
    */
-  let { offset, limit, political, gender, tag } = req.query;
+  let { offset, limit, political, gender, tag, bots } = req.query;
 
   // TODO: Testing needed to confirm different combinations of query params work
   const queryParams = {
@@ -29,6 +29,7 @@ router.get("/", async (req: Request, res: Response) => {
       typeof political === "string" ? [political] : (political as string[]),
     gender: typeof gender === "string" ? [gender] : (gender as string[]),
     tag: typeof tag === "string" ? [tag] : (tag as string[]),
+    bots: typeof bots === "string" ? [bots] : (bots as string[]),
   };
   if (queryParams.offset < 0 || queryParams.limit < 0) {
     res.send([]);
