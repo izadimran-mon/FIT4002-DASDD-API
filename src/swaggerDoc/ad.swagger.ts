@@ -57,6 +57,17 @@ export const ad = {
             type: "number",
           },
         },
+        {
+          in: "query",
+          name: "bots",
+          description: "bots to filter by",
+          required: false,
+          type: "array",
+          collectionFormat: "multi",
+          items: {
+            type: "string",
+          },
+        },
       ],
       responses: {
         "200": {

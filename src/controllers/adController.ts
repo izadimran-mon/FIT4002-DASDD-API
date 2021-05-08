@@ -4,7 +4,7 @@ import { Ad, AdTag } from "~/models";
 
 export class AdController {
   async getAll(queryParams: PaginationParams & AdFilterParams): Promise<Ad[]> {
-    const { limit, offset, gender, tag, political } = queryParams;
+    const { limit, offset, gender, tag, political, bots } = queryParams;
     const politicalInt = political?.map((e) => parseInt(e));
     // TODO: Testing needed to confirm different combinations of query params work
 
@@ -23,6 +23,10 @@ export class AdController {
         "bot.politicalRanking = ANY(:political)",
         { political: politicalInt },
       ]);
+    }
+
+    if (bots) {
+      whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
     }
 
     let findOptions: FindManyOptions = {
