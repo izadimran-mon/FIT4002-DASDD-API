@@ -36,7 +36,7 @@ const main = async () => {
 		`
   );
 
-  const adFilePath = path.resolve("src/google-data/ads_postgres1.csv");
+  const adFilePath = path.resolve("src/google-data/ads_postgres.csv");
 
   await connection?.manager.query(
     `
@@ -53,6 +53,51 @@ const main = async () => {
 		CSV HEADER;
 
 		INSERT INTO ad
+		SELECT *
+		FROM tmp_table
+		ON CONFLICT DO NOTHING;
+		`
+  );
+
+  const tagFilePath = path.resolve("src/google-data/tag_postgres.csv");
+
+  await connection?.manager.query(
+    `
+		CREATE TEMP TABLE tmp_table 
+		ON COMMIT DROP
+		AS
+		SELECT * 
+		FROM tag
+		WITH NO DATA;
+
+		COPY tmp_table("id", "name")
+		FROM '${tagFilePath}'
+		DELIMITER ',';
+
+		INSERT INTO tag
+		SELECT *
+		FROM tmp_table
+		ON CONFLICT DO NOTHING;
+		`
+  );
+
+  const adTagFilePath = path.resolve("src/google-data/ad_tag_postgres.csv");
+
+  await connection?.manager.query(
+    `
+		CREATE TEMP TABLE tmp_table 
+		ON COMMIT DROP
+		AS
+		SELECT * 
+		FROM ad_tag
+		WITH NO DATA;
+
+		COPY tmp_table("tagId", "adId")
+		FROM '${adTagFilePath}'
+		DELIMITER ','
+    CSV HEADER;
+
+		INSERT INTO ad_tag
 		SELECT *
 		FROM tmp_table
 		ON CONFLICT DO NOTHING;
