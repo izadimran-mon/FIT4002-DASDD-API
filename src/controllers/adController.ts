@@ -1,6 +1,6 @@
-import { DeleteResult, FindManyOptions, QueryBuilder } from "typeorm";
+import { DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
 import { AdFilterParams, PaginationParams } from "~/helpers/types";
-import { Ad, AdTag } from "~/models";
+import { Ad, AdTag, Tag } from "~/models";
 
 export class AdController {
   async getAll(queryParams: PaginationParams & AdFilterParams): Promise<Ad[]> {
@@ -32,16 +32,16 @@ export class AdController {
     let findOptions: FindManyOptions = {
       take: limit ? limit : 30,
       skip: offset ? offset : 0,
+      select: ["id"],
       join: {
         alias: "ad",
-        leftJoinAndSelect: {
+        leftJoin: {
           adTags: "ad.adTags",
+        },
+        innerJoin: {
           tags: "adTags.tag",
           bot: "ad.bot",
         },
-        // leftJoin: {
-        //   bot: "ad.bot",
-        // },
       },
       order: {
         id: "ASC",
@@ -58,7 +58,14 @@ export class AdController {
         }
       };
     }
-    return await Ad.find(findOptions);
+    const adIds = (await Ad.find(findOptions)).map((e) => e.id);
+
+    return await Ad.find({
+      relations: ["bot", "adTags", "adTags.tag"],
+      where: {
+        id: In(adIds),
+      },
+    });
   }
 
   async getById(id: string): Promise<Ad> {
