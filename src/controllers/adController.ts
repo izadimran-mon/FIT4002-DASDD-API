@@ -4,7 +4,16 @@ import { Ad, AdTag, Tag } from "~/models";
 
 export class AdController {
   async getAll(queryParams: PaginationParams & AdFilterParams): Promise<Ad[]> {
-    const { limit, offset, gender, tag, political, bots } = queryParams;
+    const {
+      limit,
+      offset,
+      gender,
+      tag,
+      political,
+      bots,
+      startDate,
+      endDate,
+    } = queryParams;
     const politicalInt = political?.map((e) => parseInt(e));
     // TODO: Testing needed to confirm different combinations of query params work
 
@@ -29,6 +38,14 @@ export class AdController {
       whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
     }
 
+    if (startDate) {
+      whereConditions.push(["ad.createdAt >= :startDate", { startDate }]);
+    }
+
+    if (endDate) {
+      whereConditions.push(["ad.createdAt <= :endDate", { endDate }]);
+    }
+
     let findOptions: FindManyOptions = {
       take: limit ? limit : 30,
       skip: offset ? offset : 0,
@@ -43,10 +60,8 @@ export class AdController {
           bot: "ad.bot",
         },
       },
-      order: {
-        id: "ASC",
-      },
     };
+
     if (whereConditions.length > 0) {
       findOptions.where = (qb: any) => {
         for (let i = 0; i < whereConditions.length; i++) {
@@ -64,6 +79,9 @@ export class AdController {
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
+      },
+      order: {
+        createdAt: "DESC",
       },
     });
   }
