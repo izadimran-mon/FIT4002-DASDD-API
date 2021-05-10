@@ -8,4 +8,6 @@ export interface AdFilterParams {
   gender?: string[];
   tag?: string[];
   bots?: string[];
+  startDate?: Date | null;
+  endDate?: Date | null;
 }

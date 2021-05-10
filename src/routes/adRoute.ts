@@ -6,31 +6,41 @@ const router = express.Router();
 const controller = new AdController();
 
 router.get("/", async (req: Request, res: Response) => {
+  let {
+    offset,
+    limit,
+    political,
+    gender,
+    tag,
+    bots,
+    startDate,
+    endDate,
+  } = req.query;
   /**
-   * TODO:
-   * # filter ads by:
-   * - different bot attributes:
-   *    + (done) political affiliation: &political=0&political=4
-   *    + (done) gender: &gender=male&gender=female (i.e. male OR female)
-   *    + location
-   *    + age when encountered ads (more difficult)
-   * - (done) tags: &tag=fashion&tag=entertainment
-   * - dates when ads where seen (more difficult)
+   * Input validation
    *
-   * # sort ads:
+   * TODO: Testing needed to confirm different combinations of query params work
+   * TODO: possible refactoring using express-validator?
    */
-  let { offset, limit, political, gender, tag, bots } = req.query;
-
-  // TODO: Testing needed to confirm different combinations of query params work
   const queryParams = {
-    offset: offset ? parseInt(offset as string) : 0,
-    limit: limit ? parseInt(limit as string) : 30,
+    offset: offset ? parseInt(offset as string) : 0, // page offset
+    limit: limit ? parseInt(limit as string) : 30, // number of items in response
     political:
       typeof political === "string" ? [political] : (political as string[]),
     gender: typeof gender === "string" ? [gender] : (gender as string[]),
     tag: typeof tag === "string" ? [tag] : (tag as string[]),
     bots: typeof bots === "string" ? [bots] : (bots as string[]),
+    startDate:
+      typeof startDate === "string"
+        ? new Date(parseInt(startDate as string))
+        : null,
+    endDate:
+      typeof endDate === "string"
+        ? new Date(parseInt(endDate as string))
+        : null,
   };
+
+  // Invalid negative offset and limit, return a blank array
   if (queryParams.offset < 0 || queryParams.limit < 0) {
     res.send([]);
     return;
