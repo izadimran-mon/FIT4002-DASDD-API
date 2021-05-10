@@ -26,8 +26,25 @@ export const ad = {
         },
         {
           in: "query",
+          name: "startDate",
+          description:
+            "Filter ads created after this date. This should be a timestamp in ms",
+          required: false,
+          type: "number",
+        },
+        {
+          in: "query",
+          name: "endDate",
+          description:
+            "Filter ads created before this date. This should be a timestamp in ms",
+          required: false,
+          type: "number",
+        },
+        {
+          in: "query",
           name: "political",
-          description: "bot political ranking",
+          description:
+            "Filter ads with one or more of the given bot political rankings",
           required: false,
           type: "array",
           collectionFormat: "multi",
@@ -38,7 +55,7 @@ export const ad = {
         {
           in: "query",
           name: "gender",
-          description: "bot gender",
+          description: "Filter ads with one or more of the given bot genders",
           required: false,
           type: "array",
           collectionFormat: "multi",
@@ -49,7 +66,7 @@ export const ad = {
         {
           in: "query",
           name: "tag",
-          description: "tag name",
+          description: "Filter ads with one or more of the given tag names",
           required: false,
           type: "array",
           collectionFormat: "multi",
@@ -60,7 +77,7 @@ export const ad = {
         {
           in: "query",
           name: "bots",
-          description: "bots to filter by",
+          description: "Bots to filter by",
           required: false,
           type: "array",
           collectionFormat: "multi",
