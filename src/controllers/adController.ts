@@ -20,7 +20,7 @@ export class AdController {
     let findOptions: FindManyOptions = {
       take: limit ? limit : 30,
       skip: offset ? offset : 0,
-      select: ["id"],
+      select: ["id", "createdAt"],
       join: {
         alias: "ad",
         leftJoin: {
@@ -28,6 +28,9 @@ export class AdController {
           tags: "adTags.tag",
           bot: "ad.bot",
         },
+      },
+      order: {
+        createdAt: "DESC",
       },
     };
 
@@ -89,9 +92,6 @@ export class AdController {
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
-      },
-      order: {
-        createdAt: "DESC",
       },
     });
   }
