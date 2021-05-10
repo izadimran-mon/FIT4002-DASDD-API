@@ -25,8 +25,6 @@ export class AdController {
         alias: "ad",
         leftJoin: {
           adTags: "ad.adTags",
-        },
-        innerJoin: {
           tags: "adTags.tag",
           bot: "ad.bot",
         },
