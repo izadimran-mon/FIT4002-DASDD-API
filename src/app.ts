@@ -6,9 +6,12 @@ import { TryDBConnect } from "~/helpers/dbConnection";
 import { botRoute, adRoute, tagRoute, statRoute } from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import { swaggerDocument } from "./swaggerDoc/index.swagger";
+import { Server } from "node:http";
+
+const app: express.Application = express();
+let server: Server;
 
 const initServer = async () => {
-  const app: express.Application = express();
   app.use(
     cors({
       origin: [config.CLIENT_ORIGIN], // allow to server to accept request from different origin
@@ -56,9 +59,10 @@ const initServer = async () => {
     port = 8888;
   }
 
-  app.listen(port, () => {
+  server = app.listen(port, () => {
     console.log(`Server Started at: http://localhost:${port}`);
   });
 };
 
 initServer();
+export { app, server };

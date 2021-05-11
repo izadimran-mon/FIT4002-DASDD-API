@@ -9,6 +9,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jest": "^26.6.3",
+    "jest-extended": "^0.11.5",
     "pg": "^8.5.1",
     "supertest": "^6.1.3",
     "swagger-ui-express": "^4.1.6",
@@ -58,6 +59,6 @@
     "schema:drop": "npm run typeorm schema:drop",
     "schema:sync": "npm run typeorm schema:sync",
     "test": "jest --env=node --colors --coverage test --runInBand",
-    "import-data": "NODE_ENV=test node -r tsconfig-paths/register -r ts-node/register ./src/google-data/import-data.ts"
+    "import-data": "node -r tsconfig-paths/register -r ts-node/register ./src/google-data/import-data.ts"
   }
 }

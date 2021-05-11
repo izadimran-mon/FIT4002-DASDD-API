@@ -27,9 +27,7 @@ const connection = {
       } else {
         return await createConnection({ ...ORMConfig, dropSchema: true });
       }
-      console.log("Database connection was successful!");
     } catch (e) {
-      console.error("ERROR: Database connection failed!!", e);
       throw e;
     }
   },
@@ -41,11 +39,10 @@ const connection = {
   async clear() {
     const connection = getConnection();
     const entities = connection.entityMetadatas;
-
-    entities.forEach(async (entity) => {
+    for (const entity of entities) {
       const repository = connection.getRepository(entity.name);
-      await repository.query(`DELETE FROM ${entity.tableName} WHERE TRUE`);
-    });
+      await repository.query(`TRUNCATE ${entity.tableName} CASCADE`);
+    }
   },
 
   async createTestData() {
