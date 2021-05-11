@@ -2,6 +2,9 @@ import dotenv from "dotenv";
 import path from "path";
 const env = process.env;
 switch (env.NODE_ENV) {
+  case "test":
+    dotenv.config({ path: path.resolve(__dirname, "../../.test.env") });
+    break;
   case "development":
   case "dev":
     dotenv.config({ path: path.resolve(__dirname, "../../.dev.env") });
@@ -10,8 +13,8 @@ switch (env.NODE_ENV) {
   case "prod":
     dotenv.config({ path: path.resolve(__dirname, "../../.prod.env") });
     break;
-  default:
-    dotenv.config({ path: path.resolve(__dirname, "../../.dev.env") });
+  // default:
+  //   dotenv.config({ path: path.resolve(__dirname, "../../.dev.env") });
 }
 
 export type Config = {

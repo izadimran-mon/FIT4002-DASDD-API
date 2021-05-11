@@ -39,7 +39,7 @@ export class Tag extends BaseEntity {
     return;
   }
 
-  @BeforeInsert()
+  // @BeforeInsert()
   private async checkAndSyncIdSequence() {
     /**
      * Resync id sequence
@@ -53,7 +53,7 @@ export class Tag extends BaseEntity {
       `
       SELECT SETVAL(
         (SELECT PG_GET_SERIAL_SEQUENCE('"tag"', 'id')),
-        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"tag"', 'id'))-1, (SELECT (MAX("id")) FROM "tag"))
+        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"tag"', 'id'))-1, (SELECT (MAX("id")) FROM "tag"), 1)
       );
       `
     );
