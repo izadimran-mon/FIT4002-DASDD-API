@@ -43,12 +43,12 @@
     "watch": [
       "src"
     ],
-    "exec": "node -r tsconfig-paths/register -r ts-node/register ./src/app.ts",
+    "exec": "node -r tsconfig-paths/register -r ts-node/register",
     "ext": "ts, js"
   },
   "scripts": {
     "build": "tsc && tscpaths -p tsconfig.json -s ./src -o ./dist",
-    "start": "nodemon",
+    "start": "nodemon src/app.ts",
     "lint": "prettier --write .",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/configs/ormconfig.ts",
     "migration:generate": "npm run typeorm migration:generate -- -n ",
@@ -59,6 +59,7 @@
     "schema:drop": "npm run typeorm schema:drop",
     "schema:sync": "npm run typeorm schema:sync",
     "test": "jest --env=node --colors --coverage test --runInBand",
-    "import-data": "node -r tsconfig-paths/register -r ts-node/register ./src/google-data/import-data.ts"
+    "import-data": "node -r tsconfig-paths/register -r ts-node/register ./src/google-data/import-data.ts",
+    "start:debug": "nodemon --inspect=:9229 src/app.ts"
   }
 }
