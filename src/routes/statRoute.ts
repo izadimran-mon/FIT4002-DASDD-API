@@ -27,6 +27,17 @@ router.get(
 );
 
 router.get(
+  "/category-bot",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.send(await controller.getCategoryBotStat());
+    } catch (e) {
+      next(e);
+    }
+  }
+);
+
+router.get(
   "/ad-count",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
