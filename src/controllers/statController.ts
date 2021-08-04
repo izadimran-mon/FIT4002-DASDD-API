@@ -47,6 +47,31 @@ export class StatController {
     return rawRes;
   }
 
+  async getCategoryBotStat() {
+    let rawRes = await Ad.createQueryBuilder("ad")
+      .leftJoin("ad.adTags", "adTags")
+      .leftJoin("adTags.tag", "tag")
+      .leftJoin("ad.bot", "bot")
+      .select(
+        `SUM(CASE
+        WHEN bot.gender = 'Male' THEN 1
+        WHEN bot.gender = 'Female' THEN 0
+        ELSE 0.5 END)/COUNT(ad.id)`,
+        "avgGender"
+      )
+      .addSelect("AVG(bot.politicalRanking)", "avgPolitical")
+      .addSelect("tag.name", "label")
+      .groupBy("tag.name")
+      .getRawMany();
+    rawRes.forEach((e) => {
+      if (e.label === null) {
+        e.label = "uncategorised";
+      }
+    });
+    console.log(rawRes);
+    return rawRes;
+  }
+
   async getAdCounts(startDate: Date) {
     const start = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-01`;
     const endDate = new Date(startDate.setMonth(startDate.getMonth() + 1));
