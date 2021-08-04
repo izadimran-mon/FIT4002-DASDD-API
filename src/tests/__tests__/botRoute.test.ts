@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app, server } from "~/app";
-import { connection } from "../helpers/testConnection";
+import { connection } from "../testConnection";
 import "jest-extended";
 
 beforeEach(async (done) => {
