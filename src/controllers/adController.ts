@@ -2,12 +2,12 @@ import { DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
 import { AdFilterParams, PaginationParams } from "~/helpers/types";
 import { Ad, AdTag, Tag } from "~/models";
 
-interface metaData {
+interface metadata {
   page: number;
   per_page: number;
   page_count: number;
   total_count: number;
-  Links: links
+  links: links
 }
 
 interface links {
@@ -19,7 +19,7 @@ interface links {
 }
 
 export class AdController {
-  async getAll(queryParams: PaginationParams & AdFilterParams): Promise<{metaData: metaData, ads: Ad[]}> {
+  async getAll(queryParams: PaginationParams & AdFilterParams): Promise<{metadata: metadata, records: Ad[]}> {
     const {
       limit,
       offset,
@@ -139,18 +139,18 @@ export class AdController {
     }
 
     // get meta data
-    const metaDataForAd: metaData = {
+    const metadataForAd: metadata = {
       page: currentPage,
       per_page: currentLimit,
       page_count: filteredAdNumber,
       total_count: totalAdNumber,
-      Links: currentLink
+      links: currentLink
     }
 
     // get ads with the required relations and data
     return {
-      metaData: metaDataForAd,
-      ads: ads
+      metadata: metadataForAd,
+      records: ads
     }
   }
 

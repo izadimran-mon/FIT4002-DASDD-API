@@ -49,33 +49,49 @@ router.get("/", async (req: Request, res: Response) => {
 
 
   // Update the response with the Links data
-  let response = await controller.getAll(queryParams)
+  const response = await controller.getAll(queryParams)
+  const metadata = response.metadata
+  const links = metadata.links
+
 
   let originalURL = req.originalUrl
 
-  // for self link
-  response.metaData.Links.self = originalURL
-  // for first link
-  response.metaData.Links.first= originalURL.replace(String(queryParams.offset), "0")
-  // for last link
-  response.metaData.Links.last = originalURL.replace(String(queryParams.offset), String(Math.floor(response.metaData.total_count/response.metaData.per_page)*response.metaData.per_page))
-  // for next link
-  const nextOffset = queryParams.offset + response.metaData.per_page
-  if(nextOffset < response.metaData.total_count){
-    response.metaData.Links.next = originalURL.replace(String(queryParams.offset), String(queryParams.offset + response.metaData.per_page))
+  // check if the input includes offset and limit
+  if(!originalURL.includes("offset=")){
+    if(originalURL[(originalURL.indexOf("/ads") + 4)] !== "?"){
+      originalURL = originalURL + "?offset=0"
+    }
+    else{
+      originalURL = originalURL + "&offset=0"
+    }
   }
-  else{
-    response.metaData.Links.next = originalURL
-  }
-  // for previous link
-  const previousOffset = queryParams.offset - response.metaData.per_page
-  if(previousOffset > 0){
-    response.metaData.Links.previous = originalURL.replace(String(queryParams.offset), String(previousOffset))
-  }
-  else{
-    response.metaData.Links.previous = originalURL
+  if(!originalURL.includes("limit=")){
+    originalURL = originalURL + "&limit=30"
   }
 
+  // for self link
+  links.self = originalURL
+  // for first link
+  links.first= originalURL.replace(String(queryParams.offset), "0")
+  // for last link
+  links.last = originalURL.replace(String(queryParams.offset), String(Math.floor(metadata.total_count/metadata.per_page)*metadata.per_page))
+  // for next link
+  const nextOffset = queryParams.offset + metadata.per_page
+  if(nextOffset < metadata.total_count){
+    links.next = originalURL.replace(String(queryParams.offset), String(queryParams.offset + metadata.per_page))
+  }
+  else{
+    links.next = originalURL
+  }
+  // for previous link
+  const previousOffset = queryParams.offset - metadata.per_page
+  if(previousOffset > 0){
+    links.previous = originalURL.replace(String(queryParams.offset), String(previousOffset))
+  }
+  else{
+    links.previous = originalURL
+  }
+  console.log(response)
   // Return response
   res.send(response);
   return;
