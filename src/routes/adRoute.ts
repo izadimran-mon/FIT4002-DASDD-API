@@ -46,7 +46,38 @@ router.get("/", async (req: Request, res: Response) => {
     return;
   }
   console.log(queryParams);
-  res.send(await controller.getAll(queryParams));
+
+
+  // Update the response with the Links data
+  let response = await controller.getAll(queryParams)
+
+  let originalURL = req.originalUrl
+
+  // for self link
+  response.metaData.Links.self = originalURL
+  // for first link
+  response.metaData.Links.first= originalURL.replace(String(queryParams.offset), "0")
+  // for last link
+  response.metaData.Links.last = originalURL.replace(String(queryParams.offset), String(Math.floor(response.metaData.total_count/response.metaData.per_page)*response.metaData.per_page))
+  // for next link
+  const nextOffset = queryParams.offset + response.metaData.per_page
+  if(nextOffset < response.metaData.total_count){
+    response.metaData.Links.next = originalURL.replace(String(queryParams.offset), String(queryParams.offset + response.metaData.per_page))
+  }
+  else{
+    response.metaData.Links.next = originalURL
+  }
+  // for previous link
+  const previousOffset = queryParams.offset - response.metaData.per_page
+  if(previousOffset > 0){
+    response.metaData.Links.previous = originalURL.replace(String(queryParams.offset), String(previousOffset))
+  }
+  else{
+    response.metaData.Links.previous = originalURL
+  }
+
+  // Return response
+  res.send(response);
   return;
 });
 
