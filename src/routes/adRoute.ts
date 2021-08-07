@@ -46,7 +46,54 @@ router.get("/", async (req: Request, res: Response) => {
     return;
   }
   console.log(queryParams);
-  res.send(await controller.getAll(queryParams));
+
+
+  // Update the response with the Links data
+  const response = await controller.getAll(queryParams)
+  const metadata = response.metadata
+  const links = metadata.links
+
+
+  let originalURL = req.originalUrl
+
+  // check if the input includes offset and limit
+  if(!originalURL.includes("offset=")){
+    if(originalURL[(originalURL.indexOf("/ads") + 4)] !== "?"){
+      originalURL = originalURL + "?offset=0"
+    }
+    else{
+      originalURL = originalURL + "&offset=0"
+    }
+  }
+  if(!originalURL.includes("limit=")){
+    originalURL = originalURL + "&limit=30"
+  }
+
+  // for self link
+  links.self = originalURL
+  // for first link
+  links.first= originalURL.replace(String(queryParams.offset), "0")
+  // for last link
+  links.last = originalURL.replace(String(queryParams.offset), String(Math.floor(metadata.total_count/metadata.per_page)*metadata.per_page))
+  // for next link
+  const nextOffset = queryParams.offset + metadata.per_page
+  if(nextOffset < metadata.total_count){
+    links.next = originalURL.replace(String(queryParams.offset), String(queryParams.offset + metadata.per_page))
+  }
+  else{
+    links.next = originalURL
+  }
+  // for previous link
+  const previousOffset = queryParams.offset - metadata.per_page
+  if(previousOffset > 0){
+    links.previous = originalURL.replace(String(queryParams.offset), String(previousOffset))
+  }
+  else{
+    links.previous = originalURL
+  }
+  console.log(response)
+  // Return response
+  res.send(response);
   return;
 });
 
