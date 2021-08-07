@@ -1,4 +1,4 @@
-import { Any, DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
+import { DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
 import { AdFilterParams, PaginationParams } from "~/helpers/types";
 import { Ad, AdTag, Tag } from "~/models";
 
