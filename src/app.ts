@@ -3,7 +3,12 @@ import express, { NextFunction, Request, Response } from "express";
 import { EntityNotFoundError, getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
-import { botRoute, adRoute, tagRoute, statRoute } from "./routes/index";
+import {
+  googleBotRoute,
+  googleAdRoute,
+  googleTagRoute,
+  googleStatRoute,
+} from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import { swaggerDocument } from "./swaggerDoc/index.swagger";
 
@@ -35,10 +40,19 @@ const initServer = async () => {
   app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   // Setting up routes
-  app.use("/bots", botRoute);
-  app.use("/ads", adRoute);
-  app.use("/tags", tagRoute);
-  app.use("/stats", statRoute);
+  // Old route for Google data
+  app.use("/bots", googleBotRoute);
+  app.use("/ads", googleAdRoute);
+  app.use("/tags", googleTagRoute);
+  app.use("/stats", googleStatRoute);
+
+  // New route for Google data
+  app.use("/google/bots", googleBotRoute);
+  app.use("/google/ads", googleAdRoute);
+  app.use("/google/tags", googleTagRoute);
+  app.use("/google/stats", googleStatRoute);
+
+  // Route for Twitter data
 
   // Catching errors
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

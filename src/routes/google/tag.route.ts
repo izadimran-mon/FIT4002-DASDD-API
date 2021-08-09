@@ -28,4 +28,4 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 });
-export { router as tagRoute };
+export { router as googleTagRoute };

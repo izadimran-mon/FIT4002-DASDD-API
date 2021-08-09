@@ -25,4 +25,4 @@ router.get(
   }
 );
 
-export { router as botRoute };
+export { router as googleBotRoute };

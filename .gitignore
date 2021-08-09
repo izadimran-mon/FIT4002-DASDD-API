@@ -3,3 +3,6 @@ node_modules
 package-lock.json
 dist
 .prod.env
+.vscode
+coverage
+.test.env

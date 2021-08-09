@@ -65,4 +65,4 @@ router.get(
     }
   }
 );
-export { router as statRoute };
+export { router as googleStatRoute };
