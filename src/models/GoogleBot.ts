@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import { Ad } from ".";
+import { GoogleAd } from ".";
 
 @Entity()
-export class Bot extends BaseEntity {
+export class GoogleBot extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
@@ -46,6 +46,6 @@ export class Bot extends BaseEntity {
   @Column("int")
   politicalRanking!: number;
 
-  @OneToMany(() => Ad, (ad) => ad.bot)
-  ads!: Ad[];
+  @OneToMany(() => GoogleAd, (ad) => ad.bot)
+  ads!: GoogleAd[];
 }
