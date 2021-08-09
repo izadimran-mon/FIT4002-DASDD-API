@@ -1,9 +1,9 @@
-import { tagDef } from "./definitions/tagDef.swagger";
+import { googleTagDef } from "../definitions/tagDef.swagger";
 
 export const tag = {
-  "/tags": {
+  "/google/tags": {
     get: {
-      tags: ["Tag"],
+      tags: ["/google"],
       summary: "Returns tags",
       operationId: "getTags",
       produces: ["application/json"],
@@ -12,13 +12,13 @@ export const tag = {
           description: "successful operation",
           schema: {
             type: "array",
-            items: tagDef,
+            items: googleTagDef,
           },
         },
       },
     },
     post: {
-      tags: ["Tag"],
+      tags: ["/google"],
       summary: "Create new tag",
       operationId: "createTag",
       produces: ["application/json"],
@@ -34,15 +34,15 @@ export const tag = {
       responses: {
         "200": {
           description: "successful operation",
-          schema: tagDef,
+          schema: googleTagDef,
         },
       },
     },
   },
 
-  "/tag/{id}": {
+  "/google/tags/{id}": {
     get: {
-      tags: ["Tag"],
+      tags: ["/google"],
       summary: "Returns a tag",
       operationId: "getTagById",
       produces: ["application/json"],
@@ -58,7 +58,7 @@ export const tag = {
       responses: {
         "200": {
           description: "successful operation",
-          schema: tagDef,
+          schema: googleTagDef,
         },
       },
     },

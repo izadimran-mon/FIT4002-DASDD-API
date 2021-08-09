@@ -1,11 +1,11 @@
-import { adDef } from "./definitions/adDef.swagger";
-import { botDef } from "./definitions/botDef.swagger";
-import { tagDef } from "./definitions/tagDef.swagger";
+import { googleAdDef } from "../definitions/adDef.swagger";
+import { googleBotDef } from "../definitions/botDef.swagger";
+import { googleTagDef } from "../definitions/tagDef.swagger";
 
 export const ad = {
-  "/ads": {
+  "/google/ads": {
     get: {
-      tags: ["Ad"],
+      tags: ["/google"],
       summary: "Returns ads matching query",
       operationId: "getAds",
       produces: ["application/json"],
@@ -93,14 +93,14 @@ export const ad = {
             type: "array",
             items: {
               allOf: [
-                adDef,
+                googleAdDef,
                 {
                   type: "object",
                   properties: {
-                    bot: botDef,
+                    bot: googleBotDef,
                     tags: {
                       type: "array",
-                      items: tagDef,
+                      items: googleTagDef,
                     },
                   },
                 },
@@ -112,9 +112,9 @@ export const ad = {
     },
   },
 
-  "/ads/{id}": {
+  "/google/ads/{id}": {
     get: {
-      tags: ["Ad"],
+      tags: ["/google"],
       summary: "Returns an ad",
       operationId: "getAdById",
       produces: ["application/json"],
@@ -130,14 +130,14 @@ export const ad = {
       responses: {
         "200": {
           description: "successful operation",
-          schema: adDef,
+          schema: googleAdDef,
         },
       },
     },
   },
-  "ads/:id/tags/:tagId": {
+  "/google/ads/:id/tags/:tagId": {
     post: {
-      tags: ["Ad"],
+      tags: ["/google"],
       summary: "Attach a tag to an ad",
       operationId: "createAdTag",
       produces: ["application/json"],
@@ -162,14 +162,14 @@ export const ad = {
           description: "successful operation",
           schema: {
             allOf: [
-              adDef,
+              googleAdDef,
               {
                 type: "object",
                 properties: {
                   // bot: botDef,
                   tags: {
                     type: "array",
-                    items: tagDef,
+                    items: googleTagDef,
                   },
                 },
               },
@@ -180,7 +180,7 @@ export const ad = {
     },
 
     delete: {
-      tags: ["Ad"],
+      tags: ["/google"],
       summary: "Remove a tag from an ad",
       operationId: "removeAdTag",
       produces: ["application/json"],

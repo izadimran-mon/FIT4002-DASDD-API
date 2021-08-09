@@ -1,11 +1,11 @@
-import { adDef } from "./definitions/adDef.swagger";
-import { botDef } from "./definitions/botDef.swagger";
-import { tagDef } from "./definitions/tagDef.swagger";
+import { googleAdDef } from "../definitions/adDef.swagger";
+import { googleBotDef } from "../definitions/botDef.swagger";
+import { googleTagDef } from "../definitions/tagDef.swagger";
 
 export const bot = {
-  "/bots": {
+  "/google/bots": {
     get: {
-      tags: ["Bot"],
+      tags: ["/google"],
       summary: "Returns bots matching query",
       operationId: "getBots",
       produces: ["application/json"],
@@ -14,16 +14,16 @@ export const bot = {
           description: "successful operation",
           schema: {
             type: "array",
-            items: botDef,
+            items: googleBotDef,
           },
         },
       },
     },
   },
 
-  "/bots/{username}": {
+  "/google/bots/{username}": {
     get: {
-      tags: ["Bot"],
+      tags: ["/google"],
       summary: "Returns a bot",
       operationId: "getBotByUsername",
       produces: ["application/json"],
@@ -39,7 +39,7 @@ export const bot = {
       responses: {
         "200": {
           description: "successful operation",
-          schema: botDef,
+          schema: googleBotDef,
         },
       },
     },

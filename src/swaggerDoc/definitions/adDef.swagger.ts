@@ -1,4 +1,4 @@
-export const adDef = {
+export const googleAdDef = {
   type: "object",
   properties: {
     id: {
