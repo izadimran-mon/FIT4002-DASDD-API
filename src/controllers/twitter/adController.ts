@@ -1,6 +1,10 @@
 import { DeleteResult, FindManyOptions, In } from "typeorm";
-import { GoogleAdFilterParams, PaginationParams } from "~/helpers/types";
-import { GoogleAd, GoogleAdTag } from "~/models";
+import {
+  GoogleAdFilterParams,
+  PaginationParams,
+  TwitterAdFilterParams,
+} from "~/helpers/types";
+import { TwitterAd, TwitterAdTag } from "~/models";
 
 interface Metadata {
   page: number;
@@ -18,21 +22,21 @@ interface Links {
   last: string;
 }
 
-export class GoogleAdController {
+export class TwitterAdController {
   async getAll(
-    queryParams: PaginationParams & GoogleAdFilterParams
-  ): Promise<{ metadata: Metadata; records: GoogleAd[] }> {
+    queryParams: PaginationParams & TwitterAdFilterParams
+  ): Promise<{ metadata: Metadata; records: TwitterAd[] }> {
     const {
       limit,
       offset,
-      gender,
+      // gender,
       tag,
-      political,
+      // political,
       bots,
       startDate,
       endDate,
     } = queryParams;
-    const politicalInt = political?.map((e) => parseInt(e));
+    // const politicalInt = political?.map((e) => parseInt(e));
 
     // TODO: Testing needed to confirm different combinations of query params work
     let findOptions: FindManyOptions = {
@@ -63,20 +67,20 @@ export class GoogleAdController {
      * - Each condition / element in whereConditions is joined together using an AND
      */
     const whereConditions: any[][] = [];
-    if (gender) {
-      whereConditions.push(["bot.gender ILIKE ANY(:gender)", { gender }]);
-    }
+    // if (gender) {
+    //   whereConditions.push(["bot.gender ILIKE ANY(:gender)", { gender }]);
+    // }
 
     if (tag) {
       whereConditions.push(["tags.name ILIKE ANY(:tag)", { tag }]);
     }
 
-    if (political) {
-      whereConditions.push([
-        "bot.politicalRanking = ANY(:political)",
-        { political: politicalInt },
-      ]);
-    }
+    // if (political) {
+    //   whereConditions.push([
+    //     "bot.politicalRanking = ANY(:political)",
+    //     { political: politicalInt },
+    //   ]);
+    // }
 
     if (bots) {
       whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
@@ -103,11 +107,11 @@ export class GoogleAdController {
     }
 
     // get ad ids that fit the options
-    const adIds = (await GoogleAd.find(findOptions)).map((e) => e.id);
+    const adIds = (await TwitterAd.find(findOptions)).map((e) => e.id);
 
     const filteredAdNumber = adIds.length;
 
-    const ads = await GoogleAd.find({
+    const ads = await TwitterAd.find({
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
@@ -122,7 +126,7 @@ export class GoogleAdController {
     }
 
     if (limit !== undefined) {
-      const currentLimit = limit;
+      currentLimit = limit;
     }
 
     const currentPage = currentOffset / currentLimit;
@@ -130,7 +134,7 @@ export class GoogleAdController {
     delete findOptions.take;
     delete findOptions.skip;
 
-    const totalAdNumber = await GoogleAd.count(findOptions);
+    const totalAdNumber = await TwitterAd.count(findOptions);
 
     let currentLink: Links = {
       self: "",
@@ -156,26 +160,26 @@ export class GoogleAdController {
     };
   }
 
-  async getById(id: string): Promise<GoogleAd> {
-    return await GoogleAd.findOneOrFail({
+  async getById(id: string): Promise<TwitterAd> {
+    return await TwitterAd.findOneOrFail({
       where: { id },
       relations: ["adTags", "adTags.tag"],
     });
   }
 
-  async addTagToAd(adId: string, tagId: number): Promise<GoogleAdTag> {
-    const newAdTag = GoogleAdTag.create({
+  async addTagToAd(adId: string, tagId: number): Promise<TwitterAdTag> {
+    const newAdTag = TwitterAdTag.create({
       adId,
       tagId,
     });
-    return await GoogleAdTag.save(newAdTag);
+    return await TwitterAdTag.save(newAdTag);
   }
 
   async deleteTagFromAd(adId: string, tagId: number): Promise<DeleteResult> {
-    const adTagToDelete = GoogleAdTag.create({
+    const adTagToDelete = TwitterAdTag.create({
       adId,
       tagId,
     });
-    return await GoogleAdTag.delete(adTagToDelete);
+    return await TwitterAdTag.delete(adTagToDelete);
   }
 }

@@ -1,8 +1,8 @@
 import express from "express";
-import { googleAdRoute } from "./ad.route";
-import { googleBotRoute } from "./bot.route";
-import { googleStatRoute } from "./stat.route";
-import { googleTagRoute } from "./tag.route";
+import { googleAdRoute } from "./ad";
+import { googleBotRoute } from "./bot";
+import { googleStatRoute } from "./stat";
+import { googleTagRoute } from "./tag";
 
 const router = express.Router();
 

@@ -76,11 +76,13 @@ export class GoogleStatController {
     const start = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-01`;
     const endDate = new Date(startDate.setMonth(startDate.getMonth() + 1));
     const end = `${endDate.getFullYear()}-${endDate.getMonth() + 1}-01`;
+
+    const googleAdTableName = GoogleAd.getRepository().metadata.tableName;
     const rawRes = await getConnection().manager.query(
       `
         SELECT date, count(a."createdAt") AS count
         FROM  generate_series($1::date, $2::date, interval '1 day') g(date)
-        LEFT JOIN ad a ON a."createdAt" >= g.date
+        LEFT JOIN ${googleAdTableName} a ON a."createdAt" >= g.date
                         AND a."createdAt"  <  g.date + interval '1 day'
         GROUP  BY 1
         ORDER  BY 1;
