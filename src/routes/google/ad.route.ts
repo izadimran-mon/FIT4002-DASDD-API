@@ -1,9 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-import { AdController } from "~/controllers/adController";
-import { AdFilterParams, PaginationParams } from "~/helpers/types";
+import { GoogleAdController } from "~/controllers/google/adController";
 
 const router = express.Router();
-const controller = new AdController();
+const controller = new GoogleAdController();
 
 router.get("/", async (req: Request, res: Response) => {
   let {

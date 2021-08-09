@@ -2,7 +2,7 @@ import e from "cors";
 import { createQueryBuilder, getConnection } from "typeorm";
 import { Ad, AdTag, Bot } from "~/models";
 
-export class StatController {
+export class GoogleStatController {
   async getBotAlignmentStat() {
     let res: any = [];
     let rawRes = await Bot.createQueryBuilder("bot")

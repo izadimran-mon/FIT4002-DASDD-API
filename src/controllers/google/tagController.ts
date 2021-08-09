@@ -1,6 +1,6 @@
 import { Tag } from "~/models";
 
-export class TagController {
+export class GoogleTagController {
   async getAll(): Promise<Tag[]> {
     return await Tag.find();
   }

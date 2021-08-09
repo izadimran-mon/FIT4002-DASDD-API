@@ -1,6 +1,6 @@
 import { Bot } from "~/models";
 
-export class BotController {
+export class GoogleBotController {
   async getAll(): Promise<Bot[]> {
     return await Bot.find();
   }
