@@ -1,4 +1,12 @@
-export * from "./google/ad.route";
-export * from "./google/bot.route";
-export * from "./google/tag.route";
-export * from "./google/stat.route";
+import express from "express";
+import { googleRoute } from "./google";
+
+const router = express.Router();
+
+// Old routes for Google data, for compatibility with current frontend
+router.use("/", googleRoute);
+
+// New routes for Google data
+router.use("/google", googleRoute);
+
+export { router as apiRoute };
