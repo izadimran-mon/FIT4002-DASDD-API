@@ -1,11 +1,11 @@
 import e from "cors";
 import { createQueryBuilder, getConnection } from "typeorm";
-import { Ad, AdTag, Bot } from "~/models";
+import { GoogleAd, GoogleAdTag, GoogleBot } from "~/models";
 
 export class GoogleStatController {
   async getBotAlignmentStat() {
     let res: any = [];
-    let rawRes = await Bot.createQueryBuilder("bot")
+    let rawRes = await GoogleBot.createQueryBuilder("bot")
       .select("COUNT(bot.id)", "count")
       .addSelect("bot.politicalRanking", "label")
       .groupBy("bot.politicalRanking")
@@ -16,7 +16,7 @@ export class GoogleStatController {
       data: rawRes,
     });
 
-    rawRes = await Bot.createQueryBuilder("bot")
+    rawRes = await GoogleBot.createQueryBuilder("bot")
       .select("COUNT(bot.id)", "count")
       .addSelect("bot.gender", "label")
       .groupBy("bot.gender")
@@ -32,7 +32,7 @@ export class GoogleStatController {
   // .leftJoinAndSelect("adTags.tag", "tag")
 
   async getCategoryStat() {
-    let rawRes = await Ad.createQueryBuilder("ad")
+    let rawRes = await GoogleAd.createQueryBuilder("ad")
       .leftJoin("ad.adTags", "adTags")
       .leftJoin("adTags.tag", "tag")
       .select("COUNT(ad.id)", "count")
@@ -48,7 +48,7 @@ export class GoogleStatController {
   }
 
   async getCategoryBotStat() {
-    let rawRes = await Ad.createQueryBuilder("ad")
+    let rawRes = await GoogleAd.createQueryBuilder("ad")
       .leftJoin("ad.adTags", "adTags")
       .leftJoin("adTags.tag", "tag")
       .leftJoin("ad.bot", "bot")
@@ -93,18 +93,18 @@ export class GoogleStatController {
 
   async getAdStats() {
     const adTotal = (
-      await Ad.createQueryBuilder("ad")
+      await GoogleAd.createQueryBuilder("ad")
         .select("COUNT(*)", "adCount")
         .getRawOne()
     ).adCount;
 
     const adTagged = (
-      await AdTag.createQueryBuilder("adtag")
+      await GoogleAdTag.createQueryBuilder("adtag")
         .select("COUNT(DISTINCT adtag.adId)", "adTaggedCount")
         .getRawOne()
     ).adTaggedCount;
 
-    const botCount = (await Bot.findAndCount())[1];
+    const botCount = (await GoogleBot.findAndCount())[1];
 
     return {
       adTotal,

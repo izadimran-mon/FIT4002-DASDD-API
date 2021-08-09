@@ -5,22 +5,22 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
-import { Ad, Tag } from ".";
+import { GoogleAd, GoogleTag } from ".";
 
 @Entity()
 // TODO: cascade?
-export class AdTag extends BaseEntity {
+export class GoogleAdTag extends BaseEntity {
   @PrimaryColumn()
   adId!: string;
 
   @PrimaryColumn()
   tagId!: number;
 
-  @ManyToOne(() => Ad, (ad) => ad.adTags, { primary: true })
+  @ManyToOne(() => GoogleAd, (ad) => ad.adTags, { primary: true })
   @JoinColumn({ name: "adId" })
-  ad!: Ad;
+  ad!: GoogleAd;
 
-  @ManyToOne(() => Tag, (tag) => tag.adTags, { primary: true })
+  @ManyToOne(() => GoogleTag, (tag) => tag.adTags, { primary: true })
   @JoinColumn({ name: "tagId" })
-  tag!: Tag;
+  tag!: GoogleTag;
 }

@@ -19,7 +19,7 @@ export = {
   reconnectInterval: 2000,
   migrationsRun: false,
   entities: [join(__dirname, "..", "models", "**", "*.{ts,js}")],
-  migrations: [join(__dirname, "..", "migrations/**/*{.ts,.js}")],
+  migrations: ["migrations/**/*{.ts,.js}"],
   // seeds: ["src/database/seeds/**/*{.ts,.js}"],
   // factories: ["src/database/factories/**/*{.ts,.js}"],
   cli: {
