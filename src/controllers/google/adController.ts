@@ -1,6 +1,6 @@
 import { DeleteResult, FindManyOptions, In } from "typeorm";
 import { AdFilterParams, PaginationParams } from "~/helpers/types";
-import { GoogleAd, GoogleAdTag } from "~/models";
+import { Ad, AdTag } from "~/models";
 
 interface Metadata {
   page: number;
@@ -21,7 +21,7 @@ interface Links {
 export class GoogleAdController {
   async getAll(
     queryParams: PaginationParams & AdFilterParams
-  ): Promise<{ metadata: Metadata; records: GoogleAd[] }> {
+  ): Promise<{ metadata: Metadata; records: Ad[] }> {
     const {
       limit,
       offset,
@@ -103,11 +103,11 @@ export class GoogleAdController {
     }
 
     // get ad ids that fit the options
-    const adIds = (await GoogleAd.find(findOptions)).map((e) => e.id);
+    const adIds = (await Ad.find(findOptions)).map((e) => e.id);
 
     const filteredAdNumber = adIds.length;
 
-    const ads = await GoogleAd.find({
+    const ads = await Ad.find({
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
@@ -130,7 +130,7 @@ export class GoogleAdController {
     delete findOptions.take;
     delete findOptions.skip;
 
-    const totalAdNumber = await GoogleAd.count(findOptions);
+    const totalAdNumber = await Ad.count(findOptions);
 
     let currentLink: Links = {
       self: "",
@@ -156,26 +156,26 @@ export class GoogleAdController {
     };
   }
 
-  async getById(id: string): Promise<GoogleAd> {
-    return await GoogleAd.findOneOrFail({
+  async getById(id: string): Promise<Ad> {
+    return await Ad.findOneOrFail({
       where: { id },
       relations: ["adTags", "adTags.tag"],
     });
   }
 
-  async addTagToAd(adId: string, tagId: number): Promise<GoogleAdTag> {
-    const newAdTag = GoogleAdTag.create({
+  async addTagToAd(adId: string, tagId: number): Promise<AdTag> {
+    const newAdTag = AdTag.create({
       adId,
       tagId,
     });
-    return await GoogleAdTag.save(newAdTag);
+    return await AdTag.save(newAdTag);
   }
 
   async deleteTagFromAd(adId: string, tagId: number): Promise<DeleteResult> {
-    const adTagToDelete = GoogleAdTag.create({
+    const adTagToDelete = AdTag.create({
       adId,
       tagId,
     });
-    return await GoogleAdTag.delete(adTagToDelete);
+    return await AdTag.delete(adTagToDelete);
   }
 }

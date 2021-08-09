@@ -9,12 +9,12 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import { GoogleAdTag } from ".";
-import { GoogleAd } from "./GoogleAd";
+import { AdTag } from ".";
+import { Ad } from "./Ad";
 
 @Entity()
 @Unique("tag_name_constraint", ["name"])
-export class GoogleTag extends BaseEntity {
+export class Tag extends BaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
 
@@ -22,10 +22,10 @@ export class GoogleTag extends BaseEntity {
   @Column()
   name!: string;
 
-  @OneToMany(() => GoogleAdTag, (adToTag) => adToTag.tag)
-  adTags?: GoogleAdTag[];
+  @OneToMany(() => AdTag, (adToTag) => adToTag.tag)
+  adTags?: AdTag[];
 
-  ads!: GoogleAd[];
+  ads!: Ad[];
 
   @AfterLoad()
   private setAds() {

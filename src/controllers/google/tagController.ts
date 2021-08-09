@@ -1,26 +1,26 @@
-import { GoogleTag } from "~/models";
+import { Tag } from "~/models";
 
 export class GoogleTagController {
-  async getAll(): Promise<GoogleTag[]> {
-    return await GoogleTag.find();
+  async getAll(): Promise<Tag[]> {
+    return await Tag.find();
   }
 
-  async getById(id: number): Promise<GoogleTag> {
-    return await GoogleTag.findOneOrFail({
+  async getById(id: number): Promise<Tag> {
+    return await Tag.findOneOrFail({
       id,
     });
   }
 
-  async getByName(name: string): Promise<GoogleTag> {
-    return await GoogleTag.findOneOrFail({
+  async getByName(name: string): Promise<Tag> {
+    return await Tag.findOneOrFail({
       name,
     });
   }
 
   async createTag(name: string) {
-    const newTag = GoogleTag.create({
+    const newTag = Tag.create({
       name,
     });
-    return await GoogleTag.save(newTag);
+    return await Tag.save(newTag);
   }
 }

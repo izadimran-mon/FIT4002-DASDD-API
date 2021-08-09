@@ -9,17 +9,17 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from "typeorm";
-import { GoogleAdTag, GoogleBot } from ".";
-import { GoogleTag } from "./GoogleTag";
+import { AdTag, Bot } from ".";
+import { Tag } from "./Tag";
 
 @Entity()
-export class GoogleAd extends BaseEntity {
+export class Ad extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @ManyToOne(() => GoogleBot, (bot) => bot.ads)
+  @ManyToOne(() => Bot, (bot) => bot.ads)
   @JoinColumn({ name: "botId" })
-  bot?: GoogleBot;
+  bot?: Bot;
 
   @Column("uuid")
   botId?: string;
@@ -47,10 +47,10 @@ export class GoogleAd extends BaseEntity {
   @Column("varchar", { nullable: true })
   seenOn?: string;
 
-  @OneToMany(() => GoogleAdTag, (adToTag) => adToTag.ad)
-  adTags?: GoogleAdTag[];
+  @OneToMany(() => AdTag, (adToTag) => adToTag.ad)
+  adTags?: AdTag[];
 
-  tags?: GoogleTag[];
+  tags?: Tag[];
 
   @AfterLoad()
   private setTags() {

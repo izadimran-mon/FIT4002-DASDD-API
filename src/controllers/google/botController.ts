@@ -1,12 +1,12 @@
-import { GoogleBot } from "~/models";
+import { Bot } from "~/models";
 
 export class GoogleBotController {
-  async getAll(): Promise<GoogleBot[]> {
-    return await GoogleBot.find();
+  async getAll(): Promise<Bot[]> {
+    return await Bot.find();
   }
 
-  async getByUsername(username: string): Promise<GoogleBot> {
-    return await GoogleBot.findOneOrFail({
+  async getByUsername(username: string): Promise<Bot> {
+    return await Bot.findOneOrFail({
       username,
     });
   }
