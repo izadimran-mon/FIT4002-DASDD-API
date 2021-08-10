@@ -13,7 +13,7 @@ import { TwitterAdTag } from ".";
 import { TwitterAd } from "./TwitterAd";
 
 @Entity()
-@Unique("tag_name_constraint", ["name"])
+@Unique("twitter_tag_name_constraint", ["name"])
 export class TwitterTag extends BaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
@@ -48,12 +48,12 @@ export class TwitterTag extends BaseEntity {
      * - This can be disable in production if we do not manually import tag data to potentially give a very small performance boost
      * - Potential problem with concurrent tag inserting from multiple concurrent transactions?
      */
-
+    const tableName = TwitterTag.getRepository().metadata.tableName;
     const res = await getConnection().manager.query(
       `
       SELECT SETVAL(
-        (SELECT PG_GET_SERIAL_SEQUENCE('"tag"', 'id')),
-        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"tag"', 'id'))-1, (SELECT (MAX("id")) FROM "tag"))
+        (SELECT PG_GET_SERIAL_SEQUENCE('"${tableName}"', 'id')),
+        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"${tableName}"', 'id'))-1, (SELECT (MAX("id")) FROM "${tableName}"))
       );
       `
     );

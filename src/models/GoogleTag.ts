@@ -13,7 +13,7 @@ import { GoogleAdTag } from ".";
 import { GoogleAd } from "./GoogleAd";
 
 @Entity()
-@Unique("tag_name_constraint", ["name"])
+@Unique("google_tag_name_constraint", ["name"])
 export class GoogleTag extends BaseEntity {
   @PrimaryGeneratedColumn("increment")
   id!: number;
@@ -48,12 +48,13 @@ export class GoogleTag extends BaseEntity {
      * - This can be disable in production if we do not manually import tag data to potentially give a very small performance boost
      * - Potential problem with concurrent tag inserting from multiple concurrent transactions?
      */
+    const tableName = GoogleTag.getRepository().metadata.tableName;
 
     const res = await getConnection().manager.query(
       `
       SELECT SETVAL(
-        (SELECT PG_GET_SERIAL_SEQUENCE('"tag"', 'id')),
-        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"tag"', 'id'))-1, (SELECT (MAX("id")) FROM "tag"))
+        (SELECT PG_GET_SERIAL_SEQUENCE('"${tableName}"', 'id')),
+        GREATEST(NEXTVAL(PG_GET_SERIAL_SEQUENCE('"${tableName}"', 'id'))-1, (SELECT (MAX("id")) FROM "${tableName}"))
       );
       `
     );
