@@ -1,4 +1,4 @@
-export const botDef = {
+export const googleBotDef = {
   type: "object",
   properties: {
     id: {

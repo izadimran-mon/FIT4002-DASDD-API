@@ -1,12 +1,9 @@
-import { adDef } from "./definitions/adDef.swagger";
-import { botDef } from "./definitions/botDef.swagger";
-import { botAlignmentStatDef, dataDef } from "./definitions/statDef.swagger";
-import { tagDef } from "./definitions/tagDef.swagger";
+import { botAlignmentStatDef, dataDef } from "../definitions/statDef.swagger";
 
 export const stat = {
-  "/stats/bot-alignment": {
+  "/google/stats/bot-alignment": {
     get: {
-      tags: ["Statistics"],
+      tags: ["/google"],
       summary: "Returns bot alignment stat",
       operationId: "getBotAlignmentStat",
       produces: ["application/json"],
@@ -22,9 +19,9 @@ export const stat = {
     },
   },
 
-  "/stats/category": {
+  "/google/stats/category": {
     get: {
-      tags: ["Statistics"],
+      tags: ["/google"],
       summary: "Returns category stat",
       operationId: "getCategoryStat",
       produces: ["application/json"],
@@ -37,9 +34,9 @@ export const stat = {
     },
   },
 
-  "/stats/ad-count": {
+  "/google/stats/ad-count": {
     get: {
-      tags: ["Statistics"],
+      tags: ["/google"],
       summary: "Returns ad count stat",
       operationId: "getAdCountStat",
       produces: ["application/json"],
@@ -74,9 +71,9 @@ export const stat = {
     },
   },
 
-  "/stats/ad-stat": {
+  "/google/stats/ad-stat": {
     get: {
-      tags: ["Statistics"],
+      tags: ["/google"],
       summary: "Returns ad  stat",
       operationId: "getAdStat",
       produces: ["application/json"],

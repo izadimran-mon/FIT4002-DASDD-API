@@ -5,22 +5,22 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
-import { Ad, Tag } from ".";
+import { TwitterAd, TwitterTag } from ".";
 
 @Entity()
 // TODO: cascade?
-export class AdTag extends BaseEntity {
+export class TwitterAdTag extends BaseEntity {
   @PrimaryColumn()
   adId!: string;
 
   @PrimaryColumn()
   tagId!: number;
 
-  @ManyToOne(() => Ad, (ad) => ad.adTags, { primary: true })
+  @ManyToOne(() => TwitterAd, (ad) => ad.adTags, { primary: true })
   @JoinColumn({ name: "adId" })
-  ad!: Ad;
+  ad!: TwitterAd;
 
-  @ManyToOne(() => Tag, (tag) => tag.adTags, { primary: true })
+  @ManyToOne(() => TwitterTag, (tag) => tag.adTags, { primary: true })
   @JoinColumn({ name: "tagId" })
-  tag!: Tag;
+  tag!: TwitterTag;
 }

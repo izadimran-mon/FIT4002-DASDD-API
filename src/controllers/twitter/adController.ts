@@ -1,36 +1,42 @@
-import { DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
-import { AdFilterParams, PaginationParams } from "~/helpers/types";
-import { Ad, AdTag, Tag } from "~/models";
+import { DeleteResult, FindManyOptions, In } from "typeorm";
+import {
+  GoogleAdFilterParams,
+  PaginationParams,
+  TwitterAdFilterParams,
+} from "~/helpers/types";
+import { TwitterAd, TwitterAdTag } from "~/models";
 
-interface metadata {
+interface Metadata {
   page: number;
   per_page: number;
   page_count: number;
   total_count: number;
-  links: links
+  links: Links;
 }
 
-interface links {
-    self: string,
-    first: string,
-    previous: string,
-    next: string,
-    last: string
+interface Links {
+  self: string;
+  first: string;
+  previous: string;
+  next: string;
+  last: string;
 }
 
-export class AdController {
-  async getAll(queryParams: PaginationParams & AdFilterParams): Promise<{metadata: metadata, records: Ad[]}> {
+export class TwitterAdController {
+  async getAll(
+    queryParams: PaginationParams & TwitterAdFilterParams
+  ): Promise<{ metadata: Metadata; records: TwitterAd[] }> {
     const {
       limit,
       offset,
-      gender,
+      // gender,
       tag,
-      political,
+      // political,
       bots,
       startDate,
       endDate,
     } = queryParams;
-    const politicalInt = political?.map((e) => parseInt(e));
+    // const politicalInt = political?.map((e) => parseInt(e));
 
     // TODO: Testing needed to confirm different combinations of query params work
     let findOptions: FindManyOptions = {
@@ -61,20 +67,20 @@ export class AdController {
      * - Each condition / element in whereConditions is joined together using an AND
      */
     const whereConditions: any[][] = [];
-    if (gender) {
-      whereConditions.push(["bot.gender ILIKE ANY(:gender)", { gender }]);
-    }
+    // if (gender) {
+    //   whereConditions.push(["bot.gender ILIKE ANY(:gender)", { gender }]);
+    // }
 
     if (tag) {
       whereConditions.push(["tags.name ILIKE ANY(:tag)", { tag }]);
     }
 
-    if (political) {
-      whereConditions.push([
-        "bot.politicalRanking = ANY(:political)",
-        { political: politicalInt },
-      ]);
-    }
+    // if (political) {
+    //   whereConditions.push([
+    //     "bot.politicalRanking = ANY(:political)",
+    //     { political: politicalInt },
+    //   ]);
+    // }
 
     if (bots) {
       whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
@@ -101,79 +107,79 @@ export class AdController {
     }
 
     // get ad ids that fit the options
-    const adIds = (await Ad.find(findOptions)).map((e) => e.id);
+    const adIds = (await TwitterAd.find(findOptions)).map((e) => e.id);
 
-    const filteredAdNumber = adIds.length
+    const filteredAdNumber = adIds.length;
 
-    const ads = await Ad.find({
+    const ads = await TwitterAd.find({
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
       },
     });
 
-    let currentOffset = 0
-    let currentLimit = 30
+    let currentOffset = 0;
+    let currentLimit = 30;
 
-    if(offset !== undefined){
-      currentOffset = offset
+    if (offset !== undefined) {
+      currentOffset = offset;
     }
 
-    if(limit !== undefined){
-      const currentLimit = limit
+    if (limit !== undefined) {
+      currentLimit = limit;
     }
 
-    const currentPage = currentOffset / currentLimit
+    const currentPage = currentOffset / currentLimit;
 
-    delete findOptions.take
-    delete findOptions.skip
+    delete findOptions.take;
+    delete findOptions.skip;
 
-    const totalAdNumber = await Ad.count(findOptions)
-    
-    let currentLink: links = {
+    const totalAdNumber = await TwitterAd.count(findOptions);
+
+    let currentLink: Links = {
       self: "",
       first: "",
       previous: "",
       next: "",
       last: "",
-    }
+    };
 
     // get meta data
-    const metadataForAd: metadata = {
+    const metadataForAd: Metadata = {
       page: currentPage,
       per_page: currentLimit,
       page_count: filteredAdNumber,
       total_count: totalAdNumber,
-      links: currentLink
-    }
+      links: currentLink,
+    };
 
     // get ads with the required relations and data
     return {
       metadata: metadataForAd,
-      records: ads
-    }
+      records: ads,
+    };
   }
 
-  async getById(id: string): Promise<Ad> {
-    return await Ad.findOneOrFail({
+  async getById(id: string): Promise<TwitterAd> {
+    return await TwitterAd.findOneOrFail({
       where: { id },
       relations: ["adTags", "adTags.tag"],
     });
   }
 
-  async addTagToAd(adId: string, tagId: number): Promise<AdTag> {
-    const newAdTag = AdTag.create({
+  async addTagToAd(adId: string, tagId: number): Promise<TwitterAdTag> {
+    const newAdTag = TwitterAdTag.create({
       adId,
       tagId,
     });
-    return await AdTag.save(newAdTag);
+    return await TwitterAdTag.save(newAdTag);
   }
 
   async deleteTagFromAd(adId: string, tagId: number): Promise<DeleteResult> {
-    const adTagToDelete = AdTag.create({
+    const adTagToDelete = TwitterAdTag.create({
       adId,
       tagId,
     });
-    return await AdTag.delete(adTagToDelete);
+    return await TwitterAdTag.delete(adTagToDelete);
   }
 }

@@ -1,4 +1,4 @@
-export const tagDef = {
+export const googleTagDef = {
   type: "object",
   properties: {
     id: {

@@ -1,9 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-import { AdController } from "~/controllers/adController";
-import { AdFilterParams, PaginationParams } from "~/helpers/types";
+import { TwitterAdController } from "~/controllers";
 
 const router = express.Router();
-const controller = new AdController();
+const controller = new TwitterAdController();
 
 router.get("/", async (req: Request, res: Response) => {
   let {
@@ -25,9 +24,9 @@ router.get("/", async (req: Request, res: Response) => {
   const queryParams = {
     offset: offset ? parseInt(offset as string) : 0, // page offset
     limit: limit ? parseInt(limit as string) : 30, // number of items in response
-    political:
-      typeof political === "string" ? [political] : (political as string[]),
-    gender: typeof gender === "string" ? [gender] : (gender as string[]),
+    // political:
+    //   typeof political === "string" ? [political] : (political as string[]),
+    // gender: typeof gender === "string" ? [gender] : (gender as string[]),
     tag: typeof tag === "string" ? [tag] : (tag as string[]),
     bots: typeof bots === "string" ? [bots] : (bots as string[]),
     startDate:
@@ -47,51 +46,57 @@ router.get("/", async (req: Request, res: Response) => {
   }
   console.log(queryParams);
 
-
   // Update the response with the Links data
-  const response = await controller.getAll(queryParams)
-  const metadata = response.metadata
-  const links = metadata.links
+  const response = await controller.getAll(queryParams);
+  const metadata = response.metadata;
+  const links = metadata.links;
 
-
-  let originalURL = req.originalUrl
+  let originalURL = req.originalUrl;
 
   // check if the input includes offset and limit
-  if(!originalURL.includes("offset=")){
-    if(originalURL[(originalURL.indexOf("/ads") + 4)] !== "?"){
-      originalURL = originalURL + "?offset=0"
-    }
-    else{
-      originalURL = originalURL + "&offset=0"
+  if (!originalURL.includes("offset=")) {
+    if (originalURL[originalURL.indexOf("/ads") + 4] !== "?") {
+      originalURL = originalURL + "?offset=0";
+    } else {
+      originalURL = originalURL + "&offset=0";
     }
   }
-  if(!originalURL.includes("limit=")){
-    originalURL = originalURL + "&limit=30"
+  if (!originalURL.includes("limit=")) {
+    originalURL = originalURL + "&limit=30";
   }
 
   // for self link
-  links.self = originalURL
+  links.self = originalURL;
   // for first link
-  links.first= originalURL.replace(String(queryParams.offset), "0")
+  links.first = originalURL.replace(String(queryParams.offset), "0");
   // for last link
-  links.last = originalURL.replace(String(queryParams.offset), String(Math.floor(metadata.total_count/metadata.per_page)*metadata.per_page))
+  links.last = originalURL.replace(
+    String(queryParams.offset),
+    String(
+      Math.floor(metadata.total_count / metadata.per_page) * metadata.per_page
+    )
+  );
   // for next link
-  const nextOffset = queryParams.offset + metadata.per_page
-  if(nextOffset < metadata.total_count){
-    links.next = originalURL.replace(String(queryParams.offset), String(queryParams.offset + metadata.per_page))
-  }
-  else{
-    links.next = originalURL
+  const nextOffset = queryParams.offset + metadata.per_page;
+  if (nextOffset < metadata.total_count) {
+    links.next = originalURL.replace(
+      String(queryParams.offset),
+      String(queryParams.offset + metadata.per_page)
+    );
+  } else {
+    links.next = originalURL;
   }
   // for previous link
-  const previousOffset = queryParams.offset - metadata.per_page
-  if(previousOffset > 0){
-    links.previous = originalURL.replace(String(queryParams.offset), String(previousOffset))
+  const previousOffset = queryParams.offset - metadata.per_page;
+  if (previousOffset > 0) {
+    links.previous = originalURL.replace(
+      String(queryParams.offset),
+      String(previousOffset)
+    );
+  } else {
+    links.previous = originalURL;
   }
-  else{
-    links.previous = originalURL
-  }
-  console.log(response)
+  console.log(response);
   // Return response
   res.send(response);
   return;
@@ -132,4 +137,4 @@ router.delete(
   }
 );
 
-export { router as adRoute };
+export { router as twitterAdRoute };
