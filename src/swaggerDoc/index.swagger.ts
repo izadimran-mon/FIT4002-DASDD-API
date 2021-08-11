@@ -1,12 +1,7 @@
-import { ad } from "./google/ad.swagger";
-import { bot } from "./google/bot.swagger";
 import { googleAdDef } from "./definitions/adDef.swagger";
 import { googleBotDef } from "./definitions/botDef.swagger";
 import { googleTagDef } from "./definitions/tagDef.swagger";
-import { tag } from "./google/tag.swagger";
-import { stat } from "./google/stat.swagger";
 import { googleSwagger } from "./google";
-import { access } from "node:fs";
 const env = process.env;
 
 // googleSwagger.reduce((ac, cv)=> {return {...ac, ...cv}})
