@@ -1,19 +1,39 @@
 import {
   Connection,
+  ConnectionOptions,
   createConnection,
   DeepPartial,
   getConnection,
+  getConnectionOptions,
 } from "typeorm";
 import { GoogleAd, GoogleAdTag, GoogleBot, GoogleTag } from "~/models";
 import ORMConfig from "~/configs/ormconfig";
+import { createDatabase } from "pg-god";
 
 const env = process.env;
 if (env.NODE_ENV !== "test") {
   console.error("Test utilities only available in testing mode");
 }
+
 const connection = {
   async create() {
     // await createConnection();
+
+    await createDatabase(
+      { databaseName: ORMConfig.database },
+      {
+        user: ORMConfig.username,
+        port: ORMConfig.port,
+        host: ORMConfig.host,
+        password:
+          typeof ORMConfig.password === "undefined"
+            ? undefined
+            : typeof ORMConfig.password === "string"
+            ? ORMConfig.password
+            : await ORMConfig.password(),
+      }
+    );
+
     let connection: Connection | undefined;
     try {
       connection = getConnection();
@@ -22,11 +42,13 @@ const connection = {
     try {
       if (connection) {
         if (!connection.isConnected) {
-          return await connection.connect();
+          connection = await connection.connect();
         }
       } else {
-        return await createConnection({ ...ORMConfig, dropSchema: true });
+        connection = await createConnection({ ...ORMConfig, dropSchema: true });
       }
+
+      return connection;
     } catch (e) {
       throw e;
     }
