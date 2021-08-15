@@ -1,10 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
-import { BotController } from "~/controllers/botController";
+import { TwitterBotController } from "~/controllers";
 
 const router = express.Router();
 
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
-  const controller = new BotController();
+  const controller = new TwitterBotController();
   try {
     res.send(await controller.getAll());
   } catch (err) {
@@ -15,7 +15,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get(
   "/:username",
   async (req: Request, res: Response, next: NextFunction) => {
-    const controller = new BotController();
+    const controller = new TwitterBotController();
     const { username } = req.params;
     try {
       res.send(await controller.getByUsername(username));
@@ -25,4 +25,4 @@ router.get(
   }
 );
 
-export { router as botRoute };
+export { router as twitterBotRoute };

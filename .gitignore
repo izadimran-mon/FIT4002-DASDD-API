@@ -6,3 +6,7 @@ dist
 coverage
 .vscode
 .prod.env
+.vscode
+coverage
+.test.env
+migrations

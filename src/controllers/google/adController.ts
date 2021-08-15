@@ -1,9 +1,27 @@
-import { DeleteResult, FindManyOptions, In, QueryBuilder } from "typeorm";
-import { AdFilterParams, PaginationParams } from "~/helpers/types";
-import { Ad, AdTag, Tag } from "~/models";
+import { DeleteResult, FindManyOptions, In } from "typeorm";
+import { GoogleAdFilterParams, PaginationParams } from "~/helpers/types";
+import { GoogleAd, GoogleAdTag } from "~/models";
 
-export class AdController {
-  async getAll(queryParams: PaginationParams & AdFilterParams): Promise<Ad[]> {
+interface Metadata {
+  page: number;
+  per_page: number;
+  page_count: number;
+  total_count: number;
+  links: Links;
+}
+
+interface Links {
+  self: string;
+  first: string;
+  previous: string;
+  next: string;
+  last: string;
+}
+
+export class GoogleAdController {
+  async getAll(
+    queryParams: PaginationParams & GoogleAdFilterParams
+  ): Promise<{ metadata: Metadata; records: GoogleAd[] }> {
     const {
       limit,
       offset,
@@ -85,37 +103,79 @@ export class AdController {
     }
 
     // get ad ids that fit the options
-    const adIds = (await Ad.find(findOptions)).map((e) => e.id);
+    const adIds = (await GoogleAd.find(findOptions)).map((e) => e.id);
 
-    // get ads with the required relations and data
-    return await Ad.find({
+    const filteredAdNumber = adIds.length;
+
+    const ads = await GoogleAd.find({
       relations: ["bot", "adTags", "adTags.tag"],
       where: {
         id: In(adIds),
       },
     });
+
+    let currentOffset = 0;
+    let currentLimit = 30;
+
+    if (offset !== undefined) {
+      currentOffset = offset;
+    }
+
+    if (limit !== undefined) {
+      const currentLimit = limit;
+    }
+
+    const currentPage = currentOffset / currentLimit;
+
+    delete findOptions.take;
+    delete findOptions.skip;
+
+    const totalAdNumber = await GoogleAd.count(findOptions);
+
+    let currentLink: Links = {
+      self: "",
+      first: "",
+      previous: "",
+      next: "",
+      last: "",
+    };
+
+    // get meta data
+    const metadataForAd: Metadata = {
+      page: currentPage,
+      per_page: currentLimit,
+      page_count: filteredAdNumber,
+      total_count: totalAdNumber,
+      links: currentLink,
+    };
+
+    // get ads with the required relations and data
+    return {
+      metadata: metadataForAd,
+      records: ads,
+    };
   }
 
-  async getById(id: string): Promise<Ad> {
-    return await Ad.findOneOrFail({
+  async getById(id: string): Promise<GoogleAd> {
+    return await GoogleAd.findOneOrFail({
       where: { id },
       relations: ["adTags", "adTags.tag"],
     });
   }
 
-  async addTagToAd(adId: string, tagId: number): Promise<AdTag> {
-    const newAdTag = AdTag.create({
+  async addTagToAd(adId: string, tagId: number): Promise<GoogleAdTag> {
+    const newAdTag = GoogleAdTag.create({
       adId,
       tagId,
     });
-    return await AdTag.save(newAdTag);
+    return await GoogleAdTag.save(newAdTag);
   }
 
   async deleteTagFromAd(adId: string, tagId: number): Promise<DeleteResult> {
-    const adTagToDelete = AdTag.create({
+    const adTagToDelete = GoogleAdTag.create({
       adId,
       tagId,
     });
-    return await AdTag.delete(adTagToDelete);
+    return await GoogleAdTag.delete(adTagToDelete);
   }
 }

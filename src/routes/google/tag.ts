@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-import { TagController } from "~/controllers/index";
+import { GoogleTagController } from "~/controllers/index";
 
 const router = express.Router();
-const controller = new TagController();
+const controller = new GoogleTagController();
 
 router.get("/", async (req: Request, res: Response) => {
   res.send(await controller.getAll());
@@ -28,4 +28,4 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 });
-export { router as tagRoute };
+export { router as googleTagRoute };

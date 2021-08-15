@@ -1,11 +1,10 @@
-import { ad } from "./ad.swagger";
-import { bot } from "./bot.swagger";
-import { adDef } from "./definitions/adDef.swagger";
-import { botDef } from "./definitions/botDef.swagger";
-import { tagDef } from "./definitions/tagDef.swagger";
-import { stat } from "./stat.swagger";
-import { tag } from "./tag.swagger";
+import { googleAdDef } from "./definitions/adDef.swagger";
+import { googleBotDef } from "./definitions/botDef.swagger";
+import { googleTagDef } from "./definitions/tagDef.swagger";
+import { googleSwagger } from "./google";
 const env = process.env;
+
+// googleSwagger.reduce((ac, cv)=> {return {...ac, ...cv}})
 
 export const swaggerDocument = {
   swagger: "2.0",
@@ -18,29 +17,29 @@ export const swaggerDocument = {
   basePath:
     env.NODE_ENV === "prod" || env.NODE_ENV === "production" ? "/api" : "/",
   tags: [
+    // {
+    //   name: "google/ad",
+    // },
+    // {
+    //   name: "google/bot",
+    // },
+    // {
+    //   name: "google/statistics",
+    // },
+    // {
+    //   name: "google/tag",
+    // },
     {
-      name: "Ad",
-    },
-    {
-      name: "Bot",
-    },
-    {
-      name: "Statistics",
-    },
-    {
-      name: "Tag",
+      name: "/google",
     },
   ],
   schemes: ["http"],
   paths: {
-    ...ad,
-    ...bot,
-    ...tag,
-    ...stat,
+    ...googleSwagger,
   },
   definitions: {
-    Ad: adDef,
-    Bot: botDef,
-    Tag: tagDef,
+    GoogleAd: googleAdDef,
+    GoogleBot: googleBotDef,
+    GoogleTag: googleTagDef,
   },
 };

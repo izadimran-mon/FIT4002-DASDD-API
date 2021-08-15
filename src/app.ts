@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { EntityNotFoundError, getConnection } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
-import { botRoute, adRoute, tagRoute, statRoute } from "./routes/index";
+import { apiRoute } from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import { swaggerDocument } from "./swaggerDoc/index.swagger";
 import { Server } from "node:http";
@@ -38,10 +38,9 @@ const initServer = async () => {
   app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   // Setting up routes
-  app.use("/bots", botRoute);
-  app.use("/ads", adRoute);
-  app.use("/tags", tagRoute);
-  app.use("/stats", statRoute);
+  app.use("/", apiRoute);
+
+  // Route for Twitter data
 
   // Catching errors
   app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

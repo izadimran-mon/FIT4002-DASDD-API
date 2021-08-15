@@ -3,9 +3,16 @@ export interface PaginationParams {
   limit?: number;
 }
 
-export interface AdFilterParams {
+export interface GoogleAdFilterParams {
   political?: string[];
   gender?: string[];
+  tag?: string[];
+  bots?: string[];
+  startDate?: Date | null;
+  endDate?: Date | null;
+}
+
+export interface TwitterAdFilterParams {
   tag?: string[];
   bots?: string[];
   startDate?: Date | null;

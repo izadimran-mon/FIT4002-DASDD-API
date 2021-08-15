@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-import { StatController } from "~/controllers/index";
+import { GoogleStatController } from "~/controllers/index";
 
 const router = express.Router();
-const controller = new StatController();
+const controller = new GoogleStatController();
 
 router.get(
   "/bot-alignment",
@@ -65,4 +65,4 @@ router.get(
     }
   }
 );
-export { router as statRoute };
+export { router as googleStatRoute };

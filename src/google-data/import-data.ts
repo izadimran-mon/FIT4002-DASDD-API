@@ -21,7 +21,7 @@ const main = async () => {
 		ON COMMIT DROP
 		AS
 		SELECT * 
-		FROM bot
+		FROM google_bot
 		WITH NO DATA;
 
 		COPY tmp_table("id", "username", "dob", "gender", "fName", "lName", "otherTermsCategory", "password", "locLat", "locLong", "type", "politicalRanking")
@@ -29,7 +29,7 @@ const main = async () => {
 		DELIMITER ','
 		CSV HEADER;
 
-		INSERT INTO bot
+		INSERT INTO google_bot
 		SELECT *
 		FROM tmp_table
 		ON CONFLICT DO NOTHING;
@@ -44,7 +44,7 @@ const main = async () => {
 		ON COMMIT DROP
 		AS
 		SELECT * 
-		FROM ad
+		FROM google_ad
 		WITH NO DATA;
 
 		COPY tmp_table("id", "botId", "createdAt", "image", "headline", "html", "adLink", "loggedIn", "seenOn")
@@ -52,7 +52,7 @@ const main = async () => {
 		DELIMITER ','
 		CSV HEADER;
 
-		INSERT INTO ad
+		INSERT INTO google_ad
 		SELECT *
 		FROM tmp_table
 		ON CONFLICT DO NOTHING;
@@ -67,14 +67,14 @@ const main = async () => {
 		ON COMMIT DROP
 		AS
 		SELECT * 
-		FROM tag
+		FROM google_tag
 		WITH NO DATA;
 
 		COPY tmp_table("id", "name")
 		FROM '${tagFilePath}'
 		DELIMITER ',';
 
-		INSERT INTO tag
+		INSERT INTO google_tag
 		SELECT *
 		FROM tmp_table
 		ON CONFLICT DO NOTHING;
@@ -89,7 +89,7 @@ const main = async () => {
 		ON COMMIT DROP
 		AS
 		SELECT * 
-		FROM ad_tag
+		FROM google_ad_tag
 		WITH NO DATA;
 
 		COPY tmp_table("tagId", "adId")
@@ -97,7 +97,7 @@ const main = async () => {
 		DELIMITER ','
     CSV HEADER;
 
-		INSERT INTO ad_tag
+		INSERT INTO google_ad_tag
 		SELECT *
 		FROM tmp_table
 		ON CONFLICT DO NOTHING;

@@ -4,7 +4,7 @@ import { config } from "./config";
 // const result = dotenv.config();
 
 const isCompiled = path.extname(__filename).includes("js");
-console.log([join(__dirname, "..", "models", "**", "*.entity.{ts,js}")]);
+console.log([join(__dirname, "..", "migrations/**/*{.ts,.js}")]);
 export = {
   type: "postgres",
   host: config.DB_HOST || "localhost",
@@ -19,11 +19,11 @@ export = {
   reconnectInterval: 2000,
   migrationsRun: false,
   entities: [join(__dirname, "..", "models", "**", "*.{ts,js}")],
-  // migrations: ["src/migrations/**/*{.ts,.js}"],
+  migrations: ["migrations/**/*{.ts,.js}"],
   // seeds: ["src/database/seeds/**/*{.ts,.js}"],
   // factories: ["src/database/factories/**/*{.ts,.js}"],
   cli: {
-    entitiesDir: join(__dirname, "..", "models"),
-    migrationsDir: join(__dirname, "..", "migrations"),
+    entitiesDir: join(__dirname, "..", "models", "**", "*.{ts,js}"),
+    migrationsDir: "migrations",
   },
 } as ConnectionOptions;
