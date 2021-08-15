@@ -16,14 +16,14 @@ afterEach(async (done) => {
   done();
 });
 
-test("Health path", async (done) => {
-  await supertest(app).get("/health").expect(200);
-  done();
-});
+// test("Health path", async (done) => {
+//   await supertest(app).get("/health").expect(200);
+//   done();
+// });
 
-test("Get many bots", async (done) => {
+test("#BOT-API-1 GET /google/bots - Get all bots", async (done) => {
   const res = await supertest(app)
-    .get("/bots")
+    .get("/google/bots")
     .expect("Content-Type", /json/)
     .expect(200);
 
@@ -46,9 +46,9 @@ test("Get many bots", async (done) => {
   done();
 });
 
-test("Get bot by username", async (done) => {
+test("#BOT-API-2 GET /google/bot/:username - Get bot with valid username", async (done) => {
   const res = await supertest(app)
-    .get("/bots/bot1")
+    .get("/google/bots/bot1")
     .expect("Content-Type", /json/)
     .expect(200);
 
@@ -69,5 +69,13 @@ test("Get bot by username", async (done) => {
 
   const { body } = res;
   expect(body).toMatchObject(expected);
+  done();
+});
+
+test("#BOT-API-3 GET /google/bot/:username - Get bot with invalid username", async (done) => {
+  const res = await supertest(app)
+    .get("/google/bots/iojio")
+    .expect("Content-Type", /json/)
+    .expect(404);
   done();
 });

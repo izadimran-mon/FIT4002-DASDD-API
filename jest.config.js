@@ -17,9 +17,26 @@ module.exports = {
     "/node_modules/",
     "<rootDir>/src/swaggerDoc",
     "<rootDir>/dist",
+    "/migrations/",
   ],
-  coveragePathIgnorePatterns: ["<rootDir>/src/swaggerDoc", "<rootDir>/dist"],
+  coveragePathIgnorePatterns: [
+    "<rootDir>/src/swaggerDoc",
+    "<rootDir>/dist",
+    "/migrations/",
+  ],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   collectCoverage: true,
   setupFilesAfterEnv: ["jest-extended"],
+  reporters: [
+    "default",
+    [
+      "jest-html-reporters",
+      {
+        publicPath: "./coverage",
+        filename: "report.html",
+        expand: true,
+        openReport: true,
+      },
+    ],
+  ],
 };
