@@ -4,7 +4,7 @@ import {
   DeepPartial,
   getConnection,
 } from "typeorm";
-import { Ad, AdTag, Bot, Tag } from "~/models";
+import { GoogleAd, GoogleAdTag, GoogleBot, GoogleTag } from "~/models";
 import ORMConfig from "~/configs/ormconfig";
 
 const env = process.env;
@@ -47,7 +47,7 @@ const connection = {
 
   async createTestData() {
     getConnection();
-    const bot1 = Bot.create({
+    const bot1 = GoogleBot.create({
       username: "bot1",
       dob: new Date("1999-07-14"),
       gender: "male",
@@ -61,7 +61,7 @@ const connection = {
       politicalRanking: 0,
     });
 
-    const bot2 = Bot.create({
+    const bot2 = GoogleBot.create({
       username: "bot2",
       dob: new Date("1980-10-29"),
       gender: "female",
@@ -75,15 +75,15 @@ const connection = {
       politicalRanking: 6,
     });
 
-    await Bot.save([bot1, bot2]);
+    await GoogleBot.save([bot1, bot2]);
 
-    const tag1 = Tag.create({ name: "Tech" });
-    const tag2 = Tag.create({ name: "Food" });
-    const tag3 = Tag.create({ name: "Education" });
+    const tag1 = GoogleTag.create({ name: "Tech" });
+    const tag2 = GoogleTag.create({ name: "Food" });
+    const tag3 = GoogleTag.create({ name: "Education" });
 
-    await Tag.save([tag1, tag2, tag3]);
+    await GoogleTag.save([tag1, tag2, tag3]);
 
-    const ad1 = Ad.create({
+    const ad1 = GoogleAd.create({
       bot: bot1,
       createdAt: new Date("2020-11-01 23:52:56"),
       loggedIn: true,
@@ -94,7 +94,7 @@ const connection = {
       adLink: "www.cars.com/",
     });
 
-    const ad2 = Ad.create({
+    const ad2 = GoogleAd.create({
       bot: bot1,
       createdAt: new Date("2020-11-10 23:52:56"),
       loggedIn: false,
@@ -105,7 +105,7 @@ const connection = {
       adLink: "www.donuts.com/",
     });
 
-    const ad3 = Ad.create({
+    const ad3 = GoogleAd.create({
       bot: bot2,
       createdAt: new Date("2020-11-05 23:52:56"),
       loggedIn: true,
@@ -115,7 +115,7 @@ const connection = {
       html: "innerHTML",
     });
 
-    const ad4 = Ad.create({
+    const ad4 = GoogleAd.create({
       bot: bot2,
       createdAt: new Date("2020-11-20 23:52:56"),
       loggedIn: false,
@@ -124,9 +124,9 @@ const connection = {
       adLink: "www.donuts.com/",
     });
 
-    await Ad.save([ad1, ad2, ad3, ad4]);
+    await GoogleAd.save([ad1, ad2, ad3, ad4]);
 
-    const adTagsData: DeepPartial<AdTag>[] = [
+    const adTagsData: DeepPartial<GoogleAdTag>[] = [
       {
         ad: ad1,
         tag: tag1,
@@ -148,8 +148,8 @@ const connection = {
         tag: tag3,
       },
     ];
-    const adTags = adTagsData.map((a) => AdTag.create(a));
-    await AdTag.save(adTags);
+    const adTags = adTagsData.map((a) => GoogleAdTag.create(a));
+    await GoogleAdTag.save(adTags);
   },
 };
 
