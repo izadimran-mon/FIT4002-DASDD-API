@@ -1,14 +1,12 @@
+import { createDatabase } from "pg-god";
 import {
   Connection,
-  ConnectionOptions,
   createConnection,
   DeepPartial,
   getConnection,
-  getConnectionOptions,
 } from "typeorm";
-import { GoogleAd, GoogleAdTag, GoogleBot, GoogleTag } from "~/models";
 import ORMConfig from "~/configs/ormconfig";
-import { createDatabase } from "pg-god";
+import { GoogleAd, GoogleAdTag, GoogleBot, GoogleTag } from "~/models";
 
 const env = process.env;
 if (env.NODE_ENV !== "test") {
@@ -123,7 +121,6 @@ const connection = {
       seenOn: "https://www.youtube.com/",
       image: "https://project.s3.region.amazonaws.com/image_2.png",
       headline: "Headline 2",
-      html: "innerHTML",
       adLink: "www.donuts.com/",
     });
 
