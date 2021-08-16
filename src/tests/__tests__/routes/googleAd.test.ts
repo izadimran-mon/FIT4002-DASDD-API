@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { app, server } from "~/app";
-import { botMatcherSchema } from "~/tests/customMatchers";
+import { adMatcherSchema, botMatcherSchema } from "~/tests/customMatchers";
 import { connection } from "../../testConnection";
 
 beforeAll(async (done) => {
@@ -31,17 +31,22 @@ describe("GET /google/ads", () => {
       .expect(200);
 
     const { body } = res;
-    // TODO: metadata
+    const metadata = body.metadata;
+    expect(metadata.page).toBeGreaterThanOrEqual(0);
+    expect(metadata.per_page).toBeGreaterThanOrEqual(0);
+    expect(metadata.page_count).toBeGreaterThan(0);
+    expect(metadata.total_count).toBeGreaterThanOrEqual(0);
+
+    const links = metadata.links;
+    expect(links).toMatchObject({
+      self: expect.any(String),
+      first: expect.any(String),
+      previous: expect.any(String),
+      next: expect.any(String),
+      last: expect.any(String),
+    });
     for (const element of body.records) {
-      expect(element).toMatchObject({
-        id: expect.any(String),
-        bot: expect.objectContaining(botMatcherSchema),
-        createdAt: expect.any(String),
-        loggedIn: expect.toBeTypeOrNull(Boolean),
-        headline: expect.toBeTypeOrNull(String),
-        html: expect.toBeTypeOrNull(String),
-        adLink: expect.toBeTypeOrNull(String),
-      });
+      expect(element).toMatchObject(adMatcherSchema);
     }
     done();
   });

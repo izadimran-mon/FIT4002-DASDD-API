@@ -34,3 +34,13 @@ export const botMatcherSchema = {
   type: expect.any(String),
   politicalRanking: expect.toBeOneOf([0, 1, 2, 3, 4, 5, 6]),
 };
+
+export const adMatcherSchema = {
+  id: expect.any(String),
+  bot: expect.objectContaining(botMatcherSchema),
+  createdAt: expect.any(String),
+  loggedIn: expect.toBeTypeOrNull(Boolean),
+  headline: expect.toBeTypeOrNull(String),
+  html: expect.toBeTypeOrNull(String),
+  adLink: expect.toBeTypeOrNull(String),
+};
