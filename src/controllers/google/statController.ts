@@ -7,7 +7,7 @@ export class GoogleStatController {
     let res: any = [];
     let rawRes = await GoogleBot.createQueryBuilder("bot")
       .select("COUNT(bot.id)", "count")
-      .addSelect("bot.politicalRanking", "label")
+      .addSelect("CAST(bot.politicalRanking AS char)", "label")
       .groupBy("bot.politicalRanking")
       .orderBy("bot.politicalRanking")
       .getRawMany();
@@ -67,6 +67,8 @@ export class GoogleStatController {
       if (e.label === null) {
         e.label = "uncategorised";
       }
+      e.avgGender = parseFloat(e.avgGender);
+      e.avgPolitical = parseFloat(e.avgPolitical);
     });
     console.log(rawRes);
     return rawRes;
