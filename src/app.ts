@@ -1,12 +1,12 @@
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
-import { EntityNotFoundError, getConnection } from "typeorm";
+import { Server } from "node:http";
+import swaggerUi from "swagger-ui-express";
+import { EntityNotFoundError } from "typeorm";
 import { config } from "~/configs/config";
 import { TryDBConnect } from "~/helpers/dbConnection";
 import { apiRoute } from "./routes/index";
-import swaggerUi from "swagger-ui-express";
 import { swaggerDocument } from "./swaggerDoc/index.swagger";
-import { Server } from "node:http";
 
 const app: express.Application = express();
 let server: Server;

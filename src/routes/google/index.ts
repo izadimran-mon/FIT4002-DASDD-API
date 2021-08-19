@@ -1,7 +1,7 @@
 import express from "express";
 import { googleAdRoute } from "./ad";
 import { googleBotRoute } from "./bot";
-import { googleStatRoute } from "./stat";
+import { googleStatRoute } from "./stats";
 import { googleTagRoute } from "./tag";
 
 const router = express.Router();

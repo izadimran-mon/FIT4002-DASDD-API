@@ -1,7 +1,7 @@
 import express from "express";
 import { twitterAdRoute } from "./ad";
 import { twitterBotRoute } from "./bot";
-import { twitterStatRoute } from "./stat";
+import { twitterStatRoute } from "./stats";
 import { twitterTagRoute } from "./tag";
 
 const router = express.Router();

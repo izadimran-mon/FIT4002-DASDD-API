@@ -26,4 +26,4 @@ export = {
     entitiesDir: join(__dirname, "..", "models", "**", "*.{ts,js}"),
     migrationsDir: "migrations",
   },
-} as ConnectionOptions;
+} as any;
