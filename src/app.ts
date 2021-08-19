@@ -1,6 +1,6 @@
 import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
-import { Server } from "node:http";
+import { Server } from "http";
 import swaggerUi from "swagger-ui-express";
 import { EntityNotFoundError } from "typeorm";
 import { config } from "~/configs/config";
