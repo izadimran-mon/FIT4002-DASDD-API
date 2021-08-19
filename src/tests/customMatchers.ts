@@ -32,7 +32,7 @@ export const botMatcherSchema = {
   locLat: expect.any(Number),
   locLong: expect.any(Number),
   type: expect.any(String),
-  politicalRanking: expect.toBeOneOf([0, 1, 2, 3, 4, 5, 6]),
+  politicalRanking: expect.toBeOneOf([0, 1, 2, 3, 4]),
 };
 
 export const adMatcherSchema = {
