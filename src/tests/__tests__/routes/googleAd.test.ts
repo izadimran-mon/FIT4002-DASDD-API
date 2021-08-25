@@ -106,7 +106,6 @@ describe("GET /google/ads", () => {
       .expect("Content-Type", /json/)
       .expect(200);
 
-    // console.log(res.body);
     const { records } = res.body;
 
     expect(records[0]).toMatchObject({
@@ -154,7 +153,6 @@ describe("GET /google/ads", () => {
       .expect("Content-Type", /json/)
       .expect(200);
 
-    console.log(res.body);
     const { records } = res.body;
 
     expect(records[0]).toMatchObject({
@@ -207,6 +205,78 @@ describe("GET /google/ads", () => {
         politicalRanking: 0,
       }),
       tags: expect.any(Array),
+    });
+
+    done();
+  });
+
+  test("Get many ads with parameters (multiple tags) #API-8", async (done) => {
+    const res = await supertest(app)
+      .get("/google/ads")
+      .query({
+        tag: ["tech", "Education"],
+      })
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    console.log(res.body);
+    const { records } = res.body;
+
+    for (const record of records) {
+      // Each ad needs to contain at least one of the specified tags
+      expect(record.tags).toBeOneOf([
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: "Tech",
+          }),
+        ]),
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: "Education",
+          }),
+        ]),
+      ]);
+    }
+
+    done();
+  });
+
+  test("Get many ads with parameters (startDate and endDate) #API-9", async (done) => {
+    const res = await supertest(app)
+      .get("/google/ads")
+      .query({
+        startDate: Date.parse("2020-11-09T23:50:56"),
+        endDate: Date.parse("2020-11-11T23:50:56"),
+      })
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    const { records } = res.body;
+
+    expect(records[0]).toMatchObject({
+      id: expect.any(String),
+      botId: "919222a3-c13e-4c8e-8f23-82fa872512cf",
+      createdAt: "2020-11-10T12:52:56.000Z",
+      image: "https://project.s3.region.amazonaws.com/image_2.png",
+      headline: "Headline 2",
+      html: null,
+      adLink: "www.donuts.com/",
+      loggedIn: false,
+      seenOn: "https://www.youtube.com/",
+      bot: expect.objectContaining({
+        id: "919222a3-c13e-4c8e-8f23-82fa872512cf",
+        username: "bot1",
+        gender: "male",
+        fName: "First",
+        lName: "Bot",
+        otherTermsCategory: 0,
+        password: "password123",
+        locLat: -23.139826,
+        locLong: 34.139062,
+        type: "google",
+        politicalRanking: 0,
+      }),
+      tags: [],
     });
 
     done();
