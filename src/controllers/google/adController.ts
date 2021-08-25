@@ -117,12 +117,12 @@ export class GoogleAdController {
     let currentOffset = 0;
     let currentLimit = 30;
 
-    if (offset !== undefined) {
+    if (offset) {
       currentOffset = offset;
     }
 
-    if (limit !== undefined) {
-      const currentLimit = limit;
+    if (limit) {
+      currentLimit = limit;
     }
 
     const currentPage = currentOffset / currentLimit;

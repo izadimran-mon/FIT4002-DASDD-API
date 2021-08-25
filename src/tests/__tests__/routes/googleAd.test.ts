@@ -52,25 +52,46 @@ describe("GET /google/ads", () => {
     done();
   });
 
-  test("Get ads with valid parameters #API-5", async (done) => {
+  test("Check ads metadata pagination link #API-5", async (done) => {
     const res = await supertest(app)
-      .get("/google/ads")
+      .get("/google/ads?limit=1")
       .expect("Content-Type", /json/)
       .expect(200);
 
-    // const { body } = res;
-    // // TODO: metadata
-    // for (const element of body.records) {
-    //   expect(element).toMatchObject({
-    //     id: expect.any(String),
-    //     bot: expect.objectContaining(botMatcherSchema),
-    //     createdAt: expect.any(String),
-    //     loggedIn: expect.toBeTypeOrNull(Boolean),
-    //     headline: expect.toBeTypeOrNull(String),
-    //     html: expect.toBeTypeOrNull(String),
-    //     adLink: expect.toBeTypeOrNull(String),
-    //   });
-    // }
+    const metadata = res.body.metadata;
+    expect(metadata).toMatchObject({
+      page: 0,
+      per_page: 1,
+      page_count: 1,
+      total_count: 4,
+      links: {
+        self: "/google/ads?limit=1&offset=0",
+        first: "/google/ads?limit=1&offset=0",
+        previous: "/google/ads?limit=1&offset=0",
+        next: "/google/ads?limit=1&offset=1",
+        last: "/google/ads?limit=1&offset=4",
+      },
+    });
+
+    const res2 = await supertest(app)
+      .get("/google/ads?limit=1&offset=1")
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    const metadata2 = res2.body.metadata;
+    expect(metadata2).toMatchObject({
+      page: 1,
+      per_page: 1,
+      page_count: 1,
+      total_count: 4,
+      links: {
+        self: "/google/ads?limit=1&offset=1",
+        first: "/google/ads?limit=1&offset=0",
+        previous: "/google/ads?limit=1&offset=0",
+        next: "/google/ads?limit=1&offset=2",
+        last: "/google/ads?limit=1&offset=4",
+      },
+    });
     done();
   });
 });
