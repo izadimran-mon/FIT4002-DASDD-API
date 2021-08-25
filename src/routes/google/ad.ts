@@ -44,7 +44,7 @@ router.get("/", async (req: Request, res: Response) => {
     res.send([]);
     return;
   }
-  // console.log(queryParams);
+  console.log(queryParams);
 
   // Update the response with the Links data
   const response = await controller.getAll(queryParams);

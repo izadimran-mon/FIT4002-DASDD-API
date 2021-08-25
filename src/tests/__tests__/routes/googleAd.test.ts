@@ -94,4 +94,72 @@ describe("GET /google/ads", () => {
     });
     done();
   });
+
+  test("Get many ads with parameters #API-6", async (done) => {
+    const res = await supertest(app)
+      .get("/google/ads")
+      .query({
+        limit: 1,
+        bots: "919222a3-c13e-4c8e-8f23-82fa872512cf",
+        tag: ["tech"],
+      })
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    // console.log(res.body);
+    const { metadata } = res.body;
+    const { records } = res.body;
+    expect(metadata).toMatchObject({
+      page: 0,
+      per_page: 1,
+      page_count: 1,
+      total_count: 1,
+      links: {
+        self:
+          "/google/ads?limit=1&bots=919222a3-c13e-4c8e-8f23-82fa872512cf&tag=tech&offset=0",
+        first:
+          "/google/ads?limit=1&bots=919222a3-c13e-4c8e-8f23-82fa872512cf&tag=tech&offset=0",
+        previous:
+          "/google/ads?limit=1&bots=919222a3-c13e-4c8e-8f23-82fa872512cf&tag=tech&offset=0",
+        next:
+          "/google/ads?limit=1&bots=919222a3-c13e-4c8e-8f23-82fa872512cf&tag=tech&offset=0",
+        last:
+          "/google/ads?limit=1&bots=919222a3-c13e-4c8e-8f23-82fa872512cf&tag=tech&offset=1",
+      },
+    });
+
+    expect(records[0]).toMatchObject({
+      id: expect.any(String),
+      botId: "919222a3-c13e-4c8e-8f23-82fa872512cf",
+      createdAt: "2020-11-01T12:52:56.000Z",
+      image: "https://project.s3.region.amazonaws.com/image_1.png",
+      headline: "Headline 1",
+      html: "innerHTML",
+      adLink: "www.cars.com/",
+      loggedIn: true,
+      seenOn: "https://www.theatlantic.com/",
+      bot: expect.objectContaining({
+        id: "919222a3-c13e-4c8e-8f23-82fa872512cf",
+        username: "bot1",
+        gender: "male",
+        fName: "First",
+        lName: "Bot",
+        otherTermsCategory: 0,
+        password: "password123",
+        locLat: -23.139826,
+        locLong: 34.139062,
+        type: "google",
+        politicalRanking: 0,
+      }),
+      tags: expect.arrayContaining([
+        expect.objectContaining({
+          name: "Tech",
+        }),
+        expect.objectContaining({
+          name: "Food",
+        }),
+      ]),
+    });
+    done();
+  });
 });
