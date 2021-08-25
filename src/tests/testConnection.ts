@@ -99,9 +99,9 @@ const connection = {
 
     await GoogleBot.save([bot1, bot2]);
 
-    const tag1 = GoogleTag.create({ id: 1, name: "Tech" });
-    const tag2 = GoogleTag.create({ id: 2, name: "Food" });
-    const tag3 = GoogleTag.create({ id: 3, name: "Education" });
+    const tag1 = GoogleTag.create({ name: "Tech" });
+    const tag2 = GoogleTag.create({ name: "Food" });
+    const tag3 = GoogleTag.create({ name: "Education" });
 
     await GoogleTag.save([tag1, tag2, tag3]);
 
