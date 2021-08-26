@@ -282,3 +282,135 @@ describe("GET /google/ads", () => {
     done();
   });
 });
+
+describe("GET /google/ads/:id", () => {
+  test("Get many ads with valid id #API-10", async (done) => {
+    const res = await supertest(app)
+      .get("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9")
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    const expected = {
+      id: "3883387e-8431-4cf6-ad87-6b274a882ff9",
+      botId: expect.any(String),
+      createdAt: "2020-11-20T12:52:56.000Z",
+      image: "https://project.s3.region.amazonaws.com/image_3.png",
+      seenOn: "https://www.bbc.com/news/science-environment-54395534",
+      loggedIn: false,
+      headline: "Headline 1",
+      html: "innerHTML",
+      adLink: "www.donuts.com/",
+    };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+  test("Get many ads with invalid id #API-11", async (done) => {
+    const res = await supertest(app)
+      .get("/google/ads/1")
+      .expect("Content-Type", /json/)
+      .expect(404);
+
+    const expected = {
+      "error": "QueryFailedError",
+      "message": "invalid input syntax for type uuid: \"1\""
+    };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+  test("Create new ad tag (valid case) #API-12", async (done) => {
+    const res = await supertest(app)
+      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9/tags/17")
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    const expected = {
+      "id": "3883387e-8431-4cf6-ad87-6b274a882ff9",
+      "botId": expect.any(String),
+      "createdAt": expect.any(String),
+      "image": expect.any(String),
+      "headline": expect.any(String),
+      "html": expect.any(String),
+      "adLink": expect.any(String),
+      "loggedIn": expect.any(Boolean),
+      "seenOn":expect.any(String),
+      "tags": [
+          {
+              "id": 17,
+              "name": "Tech"
+          }
+      ]
+  };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+  test("Create new ad tag (invalid case) - invalid ad id with valid tag id #API-12-1", async (done) => {
+    const res = await supertest(app)
+      .post("/google/ads/1/tags/17")
+      .expect("Content-Type", /json/)
+      .expect(404);
+
+    const expected = {
+      "error": "QueryFailedError",
+      "message": "invalid input syntax for type uuid: \"1\""
+  };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+  test("Create new ad tag (invalid case) - valid ad id with invalid tag id #API-12-2", async (done) => {
+    const res = await supertest(app)
+      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9/tags/1")
+      .expect("Content-Type", /json/)
+      .expect(404);
+
+    const expected = {
+      "error": "QueryFailedError",
+      "message": "insert or update on table \"google_ad_tag\" violates foreign key constraint \"FK_cb65ba462880f3388ea200c387f\""
+  };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+  test("Create new ad tag (invalid case) - duplicate ad id with tag id #API-12-3", async (done) => {
+    const res = await supertest(app)
+      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff1/tags/29")
+      .expect("Content-Type", /json/)
+      .expect(200);
+
+    const expected = {
+      "adLink": "www.donuts.com/",
+      "botId": expect.any(String),
+      "createdAt": "2020-11-11T12:52:56.000Z",
+      "headline": "Headline 1",
+      "html": "innerHTML",
+      "id": "3883387e-8431-4cf6-ad87-6b274a882ff1",
+      "image": "https://project.s3.region.amazonaws.com/image_3.png",
+      "loggedIn": false,
+      "seenOn": "https://www.bbc.com/news/science-environment-54395534",
+      "tags": [
+        {
+          "id": 29,
+          "name": "Tech",
+        }
+      ],
+  };
+
+    const { body } = res;
+    expect(body).toMatchObject(expected);
+    done();
+  });
+
+});

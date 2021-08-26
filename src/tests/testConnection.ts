@@ -99,11 +99,13 @@ const connection = {
 
     await GoogleBot.save([bot1, bot2]);
 
+    // if add new tags, it will make API-11 and API-12 test case fail. Please don't edit any tags here
     const tag1 = GoogleTag.create({ name: "Tech" });
     const tag2 = GoogleTag.create({ name: "Food" });
     const tag3 = GoogleTag.create({ name: "Education" });
+    const tag4 = GoogleTag.create({ name: "Fasion"});
 
-    await GoogleTag.save([tag1, tag2, tag3]);
+    await GoogleTag.save([tag1, tag2, tag3, tag4]);
 
     const ad1 = GoogleAd.create({
       bot: bot1,
@@ -145,7 +147,31 @@ const connection = {
       adLink: "www.donuts.com/",
     });
 
-    await GoogleAd.save([ad1, ad2, ad3, ad4]);
+    const ad5 = GoogleAd.create({
+      id: "3883387e-8431-4cf6-ad87-6b274a882ff9",
+      bot: bot1,
+      createdAt: new Date("2020-11-20 23:52:56"),
+      image: "https://project.s3.region.amazonaws.com/image_3.png",
+      seenOn: "https://www.bbc.com/news/science-environment-54395534",
+      loggedIn: false,
+      headline: "Headline 1",
+      html: "innerHTML",
+      adLink: "www.donuts.com/",
+    });
+
+    const ad6 = GoogleAd.create({
+      id: "3883387e-8431-4cf6-ad87-6b274a882ff1",
+      bot: bot1,
+      createdAt: new Date("2020-11-11 23:52:56"),
+      image: "https://project.s3.region.amazonaws.com/image_3.png",
+      seenOn: "https://www.bbc.com/news/science-environment-54395534",
+      loggedIn: false,
+      headline: "Headline 1",
+      html: "innerHTML",
+      adLink: "www.donuts.com/",
+    });
+    
+    await GoogleAd.save([ad1, ad2, ad3, ad4, ad5, ad6]);
 
     const adTagsData: DeepPartial<GoogleAdTag>[] = [
       {
@@ -167,6 +193,10 @@ const connection = {
       {
         ad: ad4,
         tag: tag3,
+      },
+      {
+        ad: ad6,
+        tag: tag1,
       },
     ];
     const adTags = adTagsData.map((a) => GoogleAdTag.create(a));
