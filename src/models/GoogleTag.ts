@@ -39,7 +39,7 @@ export class GoogleTag extends BaseEntity {
     return;
   }
 
-  // @BeforeInsert()
+  @BeforeInsert()
   private async checkAndSyncIdSequence() {
     /**
      * Resync id sequence
