@@ -3,31 +3,23 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
 } from "typeorm";
-import { TwitterAdTag, TwitterBot } from ".";
-import { TwitterTag } from "./TwitterTag";
+import { TwitterAdSeenByBot, TwitterAdTag, TwitterTag } from ".";
 
+interface ITwitterAd {
+  adId?: string;
+  promoterHandle?: string;
+  content?: string;
+  officialLink?: string;
+  tweetLink?: string;
+  tags?: TwitterTag[];
+}
 @Entity()
-export class TwitterAd extends BaseEntity {
+export class TwitterAd extends BaseEntity implements ITwitterAd {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
-
-  @ManyToOne(() => TwitterBot, (bot) => bot.ads)
-  @JoinColumn({ name: "botId" })
-  bot?: TwitterBot;
-
-  @Column("uuid")
-  botId?: string;
-
-  @Column("timestamptz", {
-    default: () => "CURRENT_TIMESTAMP",
-  })
-  createdAt!: Date;
 
   @Column("varchar")
   promoterHandle?: string;
@@ -36,15 +28,18 @@ export class TwitterAd extends BaseEntity {
   content?: string;
 
   @Column("varchar", { nullable: true })
-  image?: string;
+  officialLink?: string;
 
   @Column("varchar", { nullable: true })
-  adLink?: string;
+  tweetLink?: string;
 
   @OneToMany(() => TwitterAdTag, (adToTag) => adToTag.ad)
   adTags?: TwitterAdTag[];
 
   tags?: TwitterTag[];
+
+  @OneToMany(() => TwitterAdSeenByBot, (adToTag) => adToTag.ad)
+  adBot?: TwitterAdSeenByBot[];
 
   @AfterLoad()
   private setTags() {

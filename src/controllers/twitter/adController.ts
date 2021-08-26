@@ -4,7 +4,7 @@ import {
   PaginationParams,
   TwitterAdFilterParams,
 } from "~/helpers/types";
-import { TwitterAd, TwitterAdTag } from "~/models";
+import { TwitterAd, TwitterAdSeenByBot, TwitterAdTag } from "~/models";
 
 interface Metadata {
   page: number;
@@ -31,12 +31,12 @@ export class TwitterAdController {
       offset,
       // gender,
       tag,
-      // political,
+      political,
       bots,
       startDate,
       endDate,
     } = queryParams;
-    // const politicalInt = political?.map((e) => parseInt(e));
+    const politicalInt = political?.map((e) => parseInt(e));
 
     // TODO: Testing needed to confirm different combinations of query params work
     let findOptions: FindManyOptions = {
@@ -75,24 +75,24 @@ export class TwitterAdController {
       whereConditions.push(["tags.name ILIKE ANY(:tag)", { tag }]);
     }
 
-    // if (political) {
-    //   whereConditions.push([
-    //     "bot.politicalRanking = ANY(:political)",
-    //     { political: politicalInt },
-    //   ]);
-    // }
+    if (political) {
+      whereConditions.push([
+        "bot.politicalRanking = ANY(:political)",
+        { political: politicalInt },
+      ]);
+    }
 
     if (bots) {
       whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
     }
 
-    if (startDate) {
-      whereConditions.push(["ad.createdAt >= :startDate", { startDate }]);
-    }
+    // if (startDate) {
+    //   whereConditions.push(["ad.createdAt >= :startDate", { startDate }]);
+    // }
 
-    if (endDate) {
-      whereConditions.push(["ad.createdAt <= :endDate", { endDate }]);
-    }
+    // if (endDate) {
+    //   whereConditions.push(["ad.createdAt <= :endDate", { endDate }]);
+    // }
 
     if (whereConditions.length > 0) {
       findOptions.where = (qb: any) => {
@@ -135,6 +135,137 @@ export class TwitterAdController {
     delete findOptions.skip;
 
     const totalAdNumber = await TwitterAd.count(findOptions);
+
+    let currentLink: Links = {
+      self: "",
+      first: "",
+      previous: "",
+      next: "",
+      last: "",
+    };
+
+    // get meta data
+    const metadataForAd: Metadata = {
+      page: currentPage,
+      per_page: currentLimit,
+      page_count: filteredAdNumber,
+      total_count: totalAdNumber,
+      links: currentLink,
+    };
+
+    // get ads with the required relations and data
+    return {
+      metadata: metadataForAd,
+      records: ads,
+    };
+  }
+
+  async getAllNew(
+    queryParams: PaginationParams & TwitterAdFilterParams
+  ): Promise<{ metadata: Metadata; records: any[] }> {
+    const {
+      limit,
+      offset,
+      // gender,
+      tag,
+      political,
+      bots,
+      startDate,
+      endDate,
+    } = queryParams;
+    const politicalInt = political?.map((e) => parseInt(e));
+
+    // TODO: Testing needed to confirm different combinations of query params work
+    let findOptions: FindManyOptions = {
+      take: limit ? limit : 30,
+      skip: offset ? offset : 0,
+      select: ["adSeenId", "createdAt"],
+      join: {
+        alias: "adBot",
+        leftJoin: {
+          bot: "adBot.bot",
+          ad: "adBot.ad",
+          adTags: "ad.adTags",
+          tags: "adTags.tag",
+        },
+      },
+      order: {
+        createdAt: "DESC",
+      },
+    };
+
+    // Workaround for finding entity with relation condition: https://github.com/typeorm/typeorm/issues/4396#issuecomment-566254087
+
+    const whereConditions: any[][] = [];
+    // if (gender) {
+    //   whereConditions.push(["bot.gender ILIKE ANY(:gender)", { gender }]);
+    // }
+
+    if (tag) {
+      whereConditions.push(["tags.name ILIKE ANY(:tag)", { tag }]);
+    }
+
+    if (political) {
+      whereConditions.push([
+        "bot.politicalRanking = ANY(:political)",
+        { political: politicalInt },
+      ]);
+    }
+
+    if (bots) {
+      whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
+    }
+
+    // if (startDate) {
+    //   whereConditions.push(["ad.createdAt >= :startDate", { startDate }]);
+    // }
+
+    // if (endDate) {
+    //   whereConditions.push(["ad.createdAt <= :endDate", { endDate }]);
+    // }
+
+    if (whereConditions.length > 0) {
+      findOptions.where = (qb: any) => {
+        for (let i = 0; i < whereConditions.length; i++) {
+          if (i == 0) {
+            qb.where(whereConditions[i][0], whereConditions[i][1]);
+          } else {
+            qb.andWhere(whereConditions[i][0], whereConditions[i][1]);
+          }
+        }
+      };
+    }
+
+    // get ad ids that fit the options
+    const adIds = (await TwitterAdSeenByBot.find(findOptions)).map(
+      (e: TwitterAdSeenByBot) => e.adSeenId
+    );
+    const filteredAdNumber = adIds.length;
+
+    const ads = await TwitterAdSeenByBot.find({
+      relations: ["bot", "ad", "ad.adTags", "ad.adTags.tag"],
+      where: {
+        adSeenId: In(adIds),
+      },
+    });
+
+    let currentOffset = 0;
+    let currentLimit = 30;
+
+    if (offset !== undefined) {
+      currentOffset = offset;
+    }
+
+    if (limit !== undefined) {
+      currentLimit = limit;
+    }
+
+    const currentPage = currentOffset / currentLimit;
+
+    delete findOptions.take;
+    delete findOptions.skip;
+
+    const totalAdNumber = await TwitterAdSeenByBot.count(findOptions);
 
     let currentLink: Links = {
       self: "",
