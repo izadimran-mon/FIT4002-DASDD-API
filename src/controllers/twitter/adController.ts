@@ -210,13 +210,14 @@ export class TwitterAdController {
       whereConditions.push(["bot.id = ANY(:bots)", { bots }]);
     }
 
-    // if (startDate) {
-    //   whereConditions.push(["adBot.createdAt >= :startDate", { startDate }]);
-    // }
+    console.log("90234: " + startDate);
+    if (startDate) {
+      whereConditions.push(["adBot.createdAt >= :startDate", { startDate }]);
+    }
 
-    // if (endDate) {
-    //   whereConditions.push(["adBot.createdAt <= :endDate", { endDate }]);
-    // }
+    if (endDate) {
+      whereConditions.push(["adBot.createdAt <= :endDate", { endDate }]);
+    }
 
     if (whereConditions.length > 0) {
       findOptions.where = (qb: any) => {
