@@ -17,6 +17,13 @@ interface ITwitterAd {
   tweetLink?: string;
   tags?: TwitterTag[];
 }
+
+export enum TwitterAdType {
+  UNSPECIFIED = "AD_TYPE_UNSPECIFIED",
+  TWEET = "AD_TYPE_TWEET",
+  FOLLOW = "AD_TYPE_FOLLOW",
+}
+
 @Entity()
 @Unique("unique_tweet_link", ["tweetLink"])
 export class TwitterAd extends BaseEntity implements ITwitterAd {
@@ -42,6 +49,13 @@ export class TwitterAd extends BaseEntity implements ITwitterAd {
 
   @OneToMany(() => TwitterAdSeenByBot, (adToTag) => adToTag.ad)
   adBot?: TwitterAdSeenByBot[];
+
+  @Column({
+    type: "enum",
+    enum: TwitterAdType,
+    default: TwitterAdType.UNSPECIFIED,
+  })
+  adType?: TwitterAdType;
 
   @AfterLoad()
   private setTags() {

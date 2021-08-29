@@ -1,7 +1,12 @@
 import { DBConnect } from "~/helpers/dbConnection";
 import path from "path";
 import csv from "csvtojson";
-import { TwitterAd, TwitterAdSeenByBot, TwitterBot } from "~/models";
+import {
+  TwitterAd,
+  TwitterAdSeenByBot,
+  TwitterAdType,
+  TwitterBot,
+} from "~/models";
 import { uuid } from "uuidv4";
 
 const main = async () => {
@@ -49,6 +54,7 @@ type AdJson = {
   created_at: string;
   seen_on: string;
   official_ad_link: string;
+  ad_type: string;
 };
 
 async function importAds() {
@@ -68,6 +74,7 @@ async function importAds() {
         content: adJson.content,
         officialLink: adJson.official_ad_link,
         tweetLink: adJson.seen_on,
+        adType: adJson.ad_type as TwitterAdType,
       });
       await TwitterAd.save(newAd);
     }

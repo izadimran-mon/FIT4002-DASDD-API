@@ -11,7 +11,7 @@ import { TwitterAdSeenByBot } from ".";
 @Entity()
 export class TwitterBot extends BaseEntity {
   @PrimaryColumn("varchar")
-  id!: string;
+  id!: string; // Same as username, not removed for compatibility reason
 
   @Column("varchar")
   username!: string;
