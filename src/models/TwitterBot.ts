@@ -3,13 +3,14 @@ import {
   Column,
   Entity,
   OneToMany,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { TwitterAdSeenByBot } from ".";
 
 @Entity()
 export class TwitterBot extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryColumn("varchar")
   id!: string;
 
   @Column("varchar")

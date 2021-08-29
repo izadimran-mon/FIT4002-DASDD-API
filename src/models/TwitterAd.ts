@@ -5,6 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import { TwitterAdSeenByBot, TwitterAdTag, TwitterTag } from ".";
 
@@ -17,6 +18,7 @@ interface ITwitterAd {
   tags?: TwitterTag[];
 }
 @Entity()
+@Unique("unique_tweet_link", ["tweetLink"])
 export class TwitterAd extends BaseEntity implements ITwitterAd {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
