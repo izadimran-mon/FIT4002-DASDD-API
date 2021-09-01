@@ -3,18 +3,24 @@ name: FIT4002 DASDD API CI
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  install_dependencies:
-    name: Install dependencies
+  test_API:
+    name: Test API side functionalities
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm install
+      - name: Test using Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: yarn install
         working-directory: .
+      - run: yarn test
+        working-directory: .
+      
   publish:
     name: Publish Images to Docker Hub
     needs:
-      - install_dependencies
+      - test_API
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     steps:
@@ -34,7 +40,7 @@ jobs:
   deploy:
     name: Deploy to AWS Elastic Beanstalk
     needs:
-      - install_dependencies
+      - test_API
       - publish
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
