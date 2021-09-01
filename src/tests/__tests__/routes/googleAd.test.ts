@@ -457,7 +457,7 @@ describe("GET /google/ads/:id", () => {
     done();
   });
 
-  test("Get many ads with valid id #API-10", async (done) => {
+  test("Get ad by valid id #API-10", async (done) => {
     const res = await supertest(app)
       .get("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9")
       .expect("Content-Type", /json/)
@@ -480,7 +480,7 @@ describe("GET /google/ads/:id", () => {
     done();
   });
 
-  test("Get many ads with invalid id #API-11", async (done) => {
+  test("Get ad by invalid id #API-11", async (done) => {
     const res = await supertest(app)
       .get("/google/ads/1")
       .expect("Content-Type", /json/)
