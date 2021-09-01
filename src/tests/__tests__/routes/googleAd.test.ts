@@ -439,8 +439,14 @@ describe("GET /google/ads/:id", () => {
   });
 
   test("Create new ad tag (valid case) #API-12", async (done) => {
+    const getTags = await supertest(app)
+      .get("/google/tags")
+    
+    const tag_id = String(getTags.body[0].id)
+    const tag_name = String(getTags.body[0].name)
+
     const res = await supertest(app)
-      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9/tags/17")
+      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff9/tags/" + tag_id)
       .expect("Content-Type", /json/)
       .expect(200);
 
@@ -456,8 +462,8 @@ describe("GET /google/ads/:id", () => {
       seenOn: expect.any(String),
       tags: [
         {
-          id: 17,
-          name: "Tech",
+          id: Number(tag_id),
+          name: tag_name,
         },
       ],
     };
@@ -501,8 +507,14 @@ describe("GET /google/ads/:id", () => {
   });
 
   test("Create new ad tag (invalid case) - duplicate ad id with tag id #API-12-3", async (done) => {
+    const getTags = await supertest(app)
+      .get("/google/tags")
+    
+    const tag_id = String(getTags.body[0].id)
+    const tag_name = String(getTags.body[0].name)
+
     const res = await supertest(app)
-      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff1/tags/29")
+      .post("/google/ads/3883387e-8431-4cf6-ad87-6b274a882ff1/tags/" + tag_id)
       .expect("Content-Type", /json/)
       .expect(200);
 
@@ -518,8 +530,8 @@ describe("GET /google/ads/:id", () => {
       seenOn: "https://www.bbc.com/news/science-environment-54395534",
       tags: [
         {
-          id: 29,
-          name: "Tech",
+          id: Number(tag_id),
+          name: tag_name,
         },
       ],
     };
