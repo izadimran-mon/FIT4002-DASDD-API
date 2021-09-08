@@ -17,4 +17,5 @@ export interface TwitterAdFilterParams {
   bots?: string[];
   startDate?: Date | null;
   endDate?: Date | null;
+  political?: string[];
 }
