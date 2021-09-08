@@ -37,9 +37,6 @@ export class TwitterAdSeenByBot extends BaseEntity {
   // @PrimaryColumn()
   createdAt!: Date;
 
-  @Column("varchar", { nullable: true })
-  image?: string;
-
   @AfterLoad()
   private setTags() {
     if (!this.ad) return;

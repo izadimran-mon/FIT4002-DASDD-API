@@ -75,6 +75,7 @@ async function importAds() {
         officialLink: adJson.official_ad_link,
         tweetLink: adJson.seen_on,
         adType: adJson.ad_type as TwitterAdType,
+        image: adJson.screenshot,
       });
       await TwitterAd.save(newAd);
     }
@@ -88,7 +89,6 @@ async function importAds() {
       TwitterAdSeenByBot.create({
         adId: adFound.id,
         botId: adJson.botId,
-        image: adJson.screenshot,
         createdAt: adJson.created_at,
       })
     );
